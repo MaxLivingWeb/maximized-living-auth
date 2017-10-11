@@ -19,6 +19,8 @@ class SRPHelper
         $this->g = gmp_init(2);
 
         $this->k = gmp_init($this->hexHash('00' . $this->toHex($this->N) . $this->toHex($this->g)), 16);
+
+        $this->a = $this->generateRandomSmallA();
     }
 
     public function getSecretHash($username)
@@ -33,17 +35,9 @@ class SRPHelper
         return gmp_mod($randomBigInt, $this->N);
     }
 
-    public function calculateA($a)
+    public function calculateA()
     {
-        //$a = gmp_init('c690148e9ea5085aaea43fd86072cc476c62a9228c4c7addf4b0f240baa079433f02cc56d74c4dc7c4c9a154be3b74861ef15ee8a80c8fa6eeac5202319761858af5d26f7e9813ac879d941e9afffb0b40a9d41cdb73137ff8f944e2946018f89e849c1dcaebb57d1e8a5fc3dadc2769a2e420865920d7b920ecc75cc5aac0a2', 16);
-        $this->a = $a;
-        $this->A = gmp_powm($this->g, $a, $this->N);
-
-
-        echo '<br><br>';
-        echo 'a: ' . $this->toHex($this->a);
-        echo '<br><br>';
-        echo 'A: ' . $this->toHex($this->A);
+        $this->A = gmp_powm($this->g, $this->a, $this->N);
 
         return $this->A;
     }
@@ -65,8 +59,6 @@ class SRPHelper
         }
 
         $this->U = $this->calculateU($this->A, $serverBValue);
-        echo '<br><br>';
-        echo 'U: ' . $this->toHex($this->U);
 
         if ($this->U === GMP_ROUND_ZERO) {
             throw new \Exception('U cannot be zero.');
@@ -74,41 +66,22 @@ class SRPHelper
 
         $usernamePasswordHash = hash('sha256', $this->getPoolName() . $username . ':' . $password);
 
-        echo '<br><br>';
-        echo 'usernamePasswordHash: ' . $usernamePasswordHash;
-
         $x = gmp_init($this->hexHash($this->padHex($salt) . $usernamePasswordHash), 16);
-
-        echo '<br><br>';
-        echo 'x: ' . $this->toHex($x);
 
         $gModPowXN = gmp_powm($this->g, $x, $this->N);
 
-        echo '<br><br>';
-        echo 'gModPowXN: ' . $this->toHex($gModPowXN);
-
         $intValue2 = gmp_sub($serverBValue, gmp_mul($this->k, $gModPowXN));
-
-        echo '<br><br>';
-        echo 'intValue2: ' . $this->toHex($intValue2);
 
         $sValue = gmp_mod(gmp_powm($intValue2, gmp_add($this->a, gmp_mul($this->U, $x)), $this->N), $this->N);
 
-        echo '<br><br>';
-        echo 'sValue: ' .  $this->toHex($sValue);
-
         $hkdf = hash_hkdf('sha256', hex2bin($this->padHex($sValue)), 16, 'Caldera Derived Key', hex2bin($this->padHex($this->U)));
 
-        echo '<br><br>';
-        echo 'hkdf:<br>';
-        for ($i = 0; $i < strlen($hkdf); $i++) {
-            echo ord($hkdf[$i]) . '<br>';
-        }
-
-        echo '<br><br>';
-        echo 'hkdf: ' . $hkdf;
-
         return $hkdf;
+    }
+
+    public function toHex($gmp)
+    {
+        return bin2hex(gmp_export($gmp));
     }
 
     private function hexHash($hexStr)
@@ -121,11 +94,6 @@ class SRPHelper
     {
         $bigInt = new BigInteger($gmp);
         return $bigInt->toHex(true);
-    }
-
-    private function toHex($gmp)
-    {
-        return bin2hex(gmp_export($gmp));
     }
 
     public function getPoolName()
