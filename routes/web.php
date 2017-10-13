@@ -11,4 +11,12 @@
 |
 */
 
-Route::get('/', 'AuthController@index')->name('home');
+Route::get('/', 'LoginController@index')->name('home');
+
+Route::get('/login', 'LoginController@index')->name('login')->middleware('VerifySetup');
+Route::post('/login', 'LoginController@login')->name('submitLogin')->middleware('VerifySetup');
+
+Route::group(['middleware' => ['VerifySetup', 'VerifySession']], function() {
+    Route::get('/newPassword', 'NewPasswordController@index')->name('newPassword')->middleware('VerifySession');
+    Route::post('/newPassword', 'NewPasswordController@updatePassword')->name('submitNewPassword')->middleware('VerifySession');
+});
