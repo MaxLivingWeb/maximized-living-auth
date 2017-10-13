@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Helpers\CognitoHelper;
 use Aws\Exception\AwsException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
 {

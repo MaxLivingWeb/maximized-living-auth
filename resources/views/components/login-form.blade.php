@@ -8,5 +8,8 @@
         <label for="password">Password</label>
         <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
     </div>
+    <div class="form-group">
+        <a href="{{ route('forgotPassword') }}">Forgot Password?</a>
+    </div>
     <button type="submit" class="btn btn-default">Login</button>
 </form>

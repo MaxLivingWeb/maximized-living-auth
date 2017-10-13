@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\CognitoHelper;
 use Illuminate\Http\Request;
+use Aws\Exception\AwsException;
 
 class NewPasswordController extends Controller
 {
@@ -16,7 +17,7 @@ class NewPasswordController extends Controller
     {
         $username = session()->get('username');
         $password = $request->input('password');
-        $confirmPassword = $request->input('confrimPassword');
+        $confirmPassword = $request->input('confirmPassword');
 
         //TODO: Validate
 
