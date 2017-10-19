@@ -1,5 +1,9 @@
-<form method="post" action="{{ route('newPassword') }}">
+<form method="post" action="{{ route('updatePassword') }}">
     {{ csrf_field() }}
+    <div class="form-group">
+        <label for="password">Verification Code</label>
+        <input type="text" class="form-control" name="verificationCode" id="verificationCode" placeholder="Verification Code" required>
+    </div>
     <div class="form-group">
         <label for="password">New Password</label>
         <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>

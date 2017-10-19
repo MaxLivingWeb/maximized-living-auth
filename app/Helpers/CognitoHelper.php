@@ -140,6 +140,44 @@ class CognitoHelper
     }
 
     /**
+     * Sends the user a password reset verification code via email or sms
+     *
+     * @param string $username
+     * @return \Aws\Result CodeDeliveryDetails
+     */
+    public function sendPasswordCode($username)
+    {
+        $result = $this->client->forgotPassword([
+            'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
+            'SecretHash' => $this->srp->getSecretHash($username),
+            'Username' => $username,
+        ]);
+
+        return $result;
+    }
+
+    /**
+     * Attempts to update a users temporary password. Uses the users authenticated session to update their password
+     *
+     * @param string $username
+     * @param string $password
+     * @param string $verificationCode
+     * @return \Aws\Result
+     */
+    public function updatePassword($username, $password, $verificationCode)
+    {
+        $result = $this->client->confirmForgotPassword([
+            'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
+            'ConfirmationCode' => $verificationCode,
+            'Password' => $password,
+            'SecretHash' => $this->srp->getSecretHash($username),
+            'Username' => $username,
+        ]);
+
+        return $result;
+    }
+
+    /**
      * Redirects a user back to their callback url along with their IdToken and RefreshToken from AWS
      *
      * @param \Aws\Result AuthenticationResultType $authenticationResults
