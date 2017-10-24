@@ -18,6 +18,5 @@ Homestead.yaml
 composer.lock
 npm-debug.log
 .env
-.env.testing
 resources/assets/js/message.js
 .DS_Store
