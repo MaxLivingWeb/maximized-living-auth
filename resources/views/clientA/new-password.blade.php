@@ -8,12 +8,11 @@
                     <h3 class="panel-title">New Password</h3>
                 </div>
                 <div class="panel-body">
-                    @if(isset($message) && isset($hasErrors))
+                    @if($errors->any())
                         @component(
                             'components/form-alert',
                             [
-                                'message' => $message,
-                                'hasErrors' => $hasErrors
+                                'errors' => $errors->all()
                             ]
                         )@endcomponent
                     @endif

@@ -92,7 +92,8 @@ class CognitoHelper
         ]);
 
         $challengeParams = $initResult->get('ChallengeParameters');
-        $dateNow = gmdate('D M d H:i:s \U\T\C Y');
+        $dateNow = gmdate('D M j H:i:s \U\T\C Y');
+
         $username = $challengeParams['USER_ID_FOR_SRP'];
 
         $hkdf = $this->srp->getPasswordAuthenticationKey($username, $password, $challengeParams['SRP_B'], $challengeParams['SALT']);
