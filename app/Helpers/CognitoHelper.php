@@ -32,6 +32,10 @@ class CognitoHelper
      */
     public function checkCallbackUrl($url)
     {
+        if(env('APP_ENV') !== 'production') {
+            return true;
+        }
+
         $result = $this->client->describeUserPoolClient([
             'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
             'UserPoolId' => env('AWS_COGNITO_USER_POOL_ID')
