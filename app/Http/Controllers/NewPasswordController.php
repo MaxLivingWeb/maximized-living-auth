@@ -10,7 +10,9 @@ class NewPasswordController extends Controller
 {
     public function index(Request $request)
     {
-        return view(session()->get('client') . '/new-password');
+        return view('new-password', [
+            'client' => session()->get('client')
+        ]);
     }
 
     public function updatePassword(Request $request)

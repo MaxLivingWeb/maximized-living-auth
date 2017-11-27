@@ -3,9 +3,9 @@
 @section('client_handle', 'store')
 
 @section('header')
-    @include('client_store/components/header')
+    @include('components/client_store/header')
 @stop
 
 @section('footer')
-    @include('client_store/components/footer')
+    @include('components/client_store/footer')
 @stop
