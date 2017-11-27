@@ -10,8 +10,8 @@ class LoginController extends Controller
 {
     public function index(Request $request)
     {
-        //TODO: Get client from request, this will change the front end
-        $client = 'clientA';
+        //TODO: Get client from request (which will change the front end). This identifies which location the client came from (store, public site, content portal, etc)
+        $client = 'client_store';
         session()->put('client', $client);
 
         $url = $request->input('redirect_uri');

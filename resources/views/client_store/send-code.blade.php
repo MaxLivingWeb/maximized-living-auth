@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('client_store/layouts.app')
 
 @section('content')
     <div class="container">
@@ -9,17 +9,10 @@
                 </div>
                 <div class="panel-body">
                     @if($errors->any())
-                        @component(
-                            'components/form-alert',
-                            [
-                                'errors' => $errors->all()
-                            ]
-                        )@endcomponent
+                        @include('components/forms/form-alert', ['errors' => $errors->all()])
                     @endif
 
-                    @component(
-                        'components/forgot-password-form'
-                    )@endcomponent
+                    @include('components/forms/send-code-form')
                 </div>
             </div>
         </div>
