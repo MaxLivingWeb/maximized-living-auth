@@ -10,10 +10,6 @@ class LoginController extends Controller
 {
     public function index(Request $request)
     {
-        //TODO: Get client from request (which will change the front end). This identifies which location the client came from (store, public site, content portal, etc)
-        $client = 'client_store';
-        session()->put('client', $client);
-
         $url = $request->input('redirect_uri');
 
         if($url === null) {
@@ -28,9 +24,7 @@ class LoginController extends Controller
 
         session()->put('redirect_uri', $url);
 
-        return view('login', [
-            'client' => $client
-        ]);
+        return view('login');
     }
 
     public function login(Request $request)

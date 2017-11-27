@@ -10,9 +10,7 @@ class ForgotPasswordController extends Controller
 {
     public function index(Request $request)
     {
-        return view('send-code', [
-            'client' => session()->get('client')
-        ]);
+        return view('send-code');
     }
 
     public function sendCode(Request $request)
@@ -31,9 +29,7 @@ class ForgotPasswordController extends Controller
 
         session()->put('forgotPasswordUsername', $username);
 
-        return view('forgot-password', [
-            'client' => session()->get('client')
-        ]);
+        return view('forgot-password');
     }
 
     public function updatePassword(Request $request)
@@ -50,9 +46,7 @@ class ForgotPasswordController extends Controller
             $result = $cognito->updatePassword($username, $password, $verificationCode);
         }
         catch(AwsException $e) {
-            return view('forgot-password', [
-                'client' => session()->get('client')
-            ])->withErrors([$e->getAwsErrorMessage()]);
+            return view('forgot-password')->withErrors([$e->getAwsErrorMessage()]);
         }
 
         return redirect()->route('home');
