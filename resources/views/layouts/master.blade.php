@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ app()->getLocale() }}" data-client="error">
+<html lang="{{ app()->getLocale() }}" data-client="@yield('client_handle', 'error')">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -18,13 +18,17 @@
     <link href="{{ mix('/css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    @include('client_store/components/header')
+    @section('header')
+        @include('components/header')
+    @show
 
     <main id="app">
-        @yield('content')
+        @yield('content', 'No content section added to page.')
     </main>
 
-    @include('client_store/components/footer')
+    @section('footer')
+        @include('components/footer')
+    @show
 
     <!-- Scripts -->
     <script src="{{ mix('js/app.js') }}"></script>
