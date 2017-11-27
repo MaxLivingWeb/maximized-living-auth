@@ -1,9 +1,7 @@
+@import '~@arcane-digital/max-living-style-guide/src/styles/fonts';
 
-// Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+// Atoms
+@import 'atoms/variables';
 
-// Variables
-@import "variables";
-
-// Bootstrap
-@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+// Vendor Styles
+@import 'vendor/bootstrap';

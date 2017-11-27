@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('content')
     <div class="container">
@@ -9,17 +9,10 @@
                 </div>
                 <div class="panel-body">
                     @if($errors->any())
-                        @component(
-                            'components/form-alert',
-                            [
-                                'errors' => $errors->all()
-                            ]
-                        )@endcomponent
+                        @include('components/forms/form-alert', ['errors' => $errors->all()])
                     @endif
 
-                    @component(
-                        'components/login-form'
-                    )@endcomponent
+                    @include('components/forms/login-form')
                 </div>
             </div>
         </div>
