@@ -28,7 +28,7 @@ class LoginController extends Controller
 
         session()->put('redirect_uri', $url);
 
-        return view('/login', [
+        return view('login', [
             'client' => $client
         ]);
     }
