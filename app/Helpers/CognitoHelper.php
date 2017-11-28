@@ -193,8 +193,10 @@ class CognitoHelper
         session()->forget('cognitoSession');
 
         return redirect(session()->get('redirect_uri') . '?' .
-            'idToken=' . $authenticationResults['IdToken'] . '&' .
-           'refreshToken=' . $authenticationResults['RefreshToken']
+            'idToken=' . $authenticationResults['IdToken']
         );
+
+        //TODO: Refresh token has been removed. We need to find an alternative way to send the refresh token without exceeding the URL length limit
+        //'refreshToken=' . $authenticationResults['RefreshToken']
     }
 }
