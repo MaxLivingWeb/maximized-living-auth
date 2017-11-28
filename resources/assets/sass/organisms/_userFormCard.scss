@@ -1,0 +1,28 @@
+.userFormCard {
+    @include responsiveProperty(padding, 2rem);
+
+    h2 {
+        @include h4;
+        margin-bottom: 0;
+    }
+
+    a {
+        border-bottom: none;
+        font-weight: $fontWeightBold;
+        @include fontSize(0.875rem);
+    }
+
+    .inputField {
+        ~ .inputField {
+            margin-top: $small;
+        }
+    }
+
+    [type="submit"] {
+        min-width: 100%;
+        @media (min-width: $tabletBreakpoint) {
+            min-width: 10rem;
+        }
+    }
+
+}
