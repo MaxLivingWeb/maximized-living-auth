@@ -1,7 +1,14 @@
 @import '~@arcane-digital/max-living-style-guide/src/styles/fonts';
+@import '~@arcane-digital/max-living-style-guide/src/styles/ui';
 
 // Atoms
 @import 'atoms/variables';
 
-// Vendor Styles
-@import 'vendor/bootstrap';
+// Molecules
+@import 'molecules/customized-heroAlternative';
+
+// Organisms
+@import 'organisms/userFormCard';
+
+// Templates
+@import 'templates/userFormSection';
