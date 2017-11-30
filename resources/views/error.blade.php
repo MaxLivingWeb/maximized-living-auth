@@ -1,18 +1,31 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class="container">
-        <div class="col-md-6 col-md-push-3">
-            <div class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Error</h3>
-                </div>
-                <div class="panel-body">
-                    @if(isset($error))
-                        <h4>{{ $error }}</h4>
-                    @endif
-                </div>
+    <section class="heroAlternative heroAlternative-padded centerAlign border-faintGrey">
+        <div class="container">
+            <div class="heroContent">
+                <h1 class="heroHeadline">Error</h1>
             </div>
         </div>
-    </div>
+    </section>
+    <section class="welcomeSection">
+        <div class="bubbleCardContainer">
+            <div class="left bubbleBgContainer">
+                <img src="../images/BubbleBg-Left.png"/>
+            </div>
+            <div class="container">
+                <div class="welcomeCard card">
+                    <h2>An Error Occurred</h2>
+                    <div class="alert alert-danger">
+                        @if(isset($error))
+                            {{ $error }}
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="right bubbleBgContainer">
+                <img src="../images/BubbleBg-Right.png"/>
+            </div>
+        </div>
+    </section>
 @endsection
