@@ -5,10 +5,10 @@
 @import 'atoms/variables';
 
 // Molecules
-@import 'molecules/customized-heroAlternative';
 
 // Organisms
-@import 'organisms/userFormCard';
+@import 'organisms/heroAlternative';
+@import 'organisms/welcomeCard';
 
 // Templates
-@import 'templates/userFormSection';
+@import 'templates/welcomeSection';

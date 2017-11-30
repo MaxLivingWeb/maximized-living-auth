@@ -8,13 +8,13 @@
             </div>
         </div>
     </section>
-    <section class="userFormSection">
+    <section class="welcomeSection">
         <div class="bubbleCardContainer">
             <div class="left bubbleBgContainer">
                 <img src="../images/BubbleBg-Left.png"/>
             </div>
             <div class="container">
-                <div class="userFormCard card">
+                <div class="welcomeCard card">
                     <h2>Login</h2>
                     <p>If you have an account, please login below</p>
 
