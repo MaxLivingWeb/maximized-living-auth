@@ -16,8 +16,6 @@
             </div>
             <div class="container">
                 <div class="welcomeCard card">
-                    <h2>Enter the fields below</h2>
-
                     @if($errors->any())
                         @include('components/forms/form-alert', ['errors' => $errors->all()])
                     @endif
