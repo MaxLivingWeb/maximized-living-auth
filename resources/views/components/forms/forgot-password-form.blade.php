@@ -1,16 +1,18 @@
 <form method="post" action="{{ route('updatePassword') }}">
     {{ csrf_field() }}
-    <div class="form-group">
+    <div class="inputField">
         <label for="password">Verification Code</label>
-        <input type="text" class="form-control" name="verificationCode" id="verificationCode" placeholder="Verification Code" required>
+        <input type="text" name="verificationCode" id="verificationCode" placeholder="Verification Code" required>
     </div>
-    <div class="form-group">
+    <div class="inputField">
         <label for="password">New Password</label>
-        <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
+        <input type="password" name="password" id="password" placeholder="Password" required>
     </div>
-    <div class="form-group">
+    <div class="inputField">
         <label for="password">Confirm New Password</label>
-        <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Password" required>
+        <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Password" required>
     </div>
-    <button type="submit" class="btn btn-default">Submit</button>
+    <div class="inputField">
+        <button type="submit" class="button button-primary button-wide">Submit</button>
+    </div>
 </form>
