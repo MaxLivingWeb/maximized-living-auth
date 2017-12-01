@@ -4,7 +4,6 @@
         <label for="username">Email *</label>
         <input
             type="email"
-            class="form-control"
             name="username"
             id="username"
             placeholder="Email"
@@ -16,7 +15,6 @@
         <label for="password">Password *</label>
         <input
             type="password"
-            class="form-control"
             name="password"
             id="password"
             placeholder="Password"
