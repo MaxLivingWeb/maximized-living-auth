@@ -1,9 +1,11 @@
-.userFormCard {
+.welcomeCard {
     @include responsiveProperty(padding, 2rem);
 
     h2 {
         @include h4;
-        margin-bottom: 0;
+        + p {
+            margin-top: -$baseLineHeight;
+        }
     }
 
     a {

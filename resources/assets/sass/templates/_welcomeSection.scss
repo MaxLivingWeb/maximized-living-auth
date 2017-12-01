@@ -1,4 +1,4 @@
-.userFormSection {
+.welcomeSection {
     margin-top: 0;
     @media (min-width: $tabletBreakpoint) {
         position: absolute;
@@ -8,7 +8,7 @@
         margin-top: 1.875rem;
     }
 
-    .userFormCard {
+    .welcomeCard {
         max-width:40rem;
     }
 }
