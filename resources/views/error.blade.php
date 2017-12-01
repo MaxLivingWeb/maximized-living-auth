@@ -16,11 +16,9 @@
             <div class="container">
                 <div class="welcomeCard card">
                     <h2>An Error Occurred</h2>
-                    <div class="alert alert-danger">
-                        @if(isset($error))
-                            {{ $error }}
-                        @endif
-                    </div>
+                    @if($errors->any())
+                        @include('components/forms/form-alert', ['errors' => $errors->all()])
+                    @endif
                 </div>
             </div>
             <div class="right bubbleBgContainer">
