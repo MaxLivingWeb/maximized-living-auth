@@ -19,10 +19,6 @@ class VerifySetup
             return response(view('error', ['error' => 'Invalid redirect_url']));
         }
 
-        if(!session()->has('client')) {
-            return response(view('error', ['error' => 'No client provided']));
-        }
-
         return $next($request);
     }
 }

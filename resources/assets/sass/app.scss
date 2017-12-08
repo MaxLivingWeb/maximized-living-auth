@@ -1,9 +1,15 @@
+@import '~@arcane-digital/max-living-style-guide/src/styles/fonts';
+@import '~@arcane-digital/max-living-style-guide/src/styles/ui';
 
-// Fonts
-@import url("https://fonts.googleapis.com/css?family=Raleway:300,400,600");
+// Atoms
+@import 'atoms/variables';
 
-// Variables
-@import "variables";
+// Molecules
+@import 'molecules/alert';
 
-// Bootstrap
-@import "~bootstrap-sass/assets/stylesheets/bootstrap";
+// Organisms
+@import 'organisms/heroAlternative';
+@import 'organisms/welcomeCard';
+
+// Templates
+@import 'templates/welcomeSection';

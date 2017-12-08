@@ -4,7 +4,7 @@
     <section class="heroAlternative heroAlternative-padded centerAlign border-faintGrey">
         <div class="container">
             <div class="heroContent">
-                <h1 class="heroHeadline">Error</h1>
+                <h1 class="heroHeadline">New Password</h1>
             </div>
         </div>
     </section>
@@ -15,10 +15,11 @@
             </div>
             <div class="container">
                 <div class="welcomeCard card">
-                    <h2>An Error Occurred</h2>
                     @if($errors->any())
                         @include('components/forms/form-alert', ['errors' => $errors->all()])
                     @endif
+
+                    @include('components/forms/new-password-form')
                 </div>
             </div>
             <div class="right bubbleBgContainer">

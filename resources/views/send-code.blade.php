@@ -4,7 +4,8 @@
     <section class="heroAlternative heroAlternative-padded centerAlign border-faintGrey">
         <div class="container">
             <div class="heroContent">
-                <h1 class="heroHeadline">Error</h1>
+                <h1 class="heroHeadline">Forgot Password?</h1>
+                <p>Enter your account email to receive a password change token.</p>
             </div>
         </div>
     </section>
@@ -15,10 +16,13 @@
             </div>
             <div class="container">
                 <div class="welcomeCard card">
-                    <h2>An Error Occurred</h2>
+                    <h2>Enter your Email Address</h2>
+
                     @if($errors->any())
                         @include('components/forms/form-alert', ['errors' => $errors->all()])
                     @endif
+
+                    @include('components/forms/send-code-form')
                 </div>
             </div>
             <div class="right bubbleBgContainer">
