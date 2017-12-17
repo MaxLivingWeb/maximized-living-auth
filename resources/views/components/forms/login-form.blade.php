@@ -12,6 +12,9 @@
         <a href="{{ route('forgotPassword') }}">Forgot Password?</a>
     </div>
     <div class="inputField">
+        <a href="{{ route('register') }}">Register</a>
+    </div>
+    <div class="inputField">
         <button type="submit" class="button button-primary button-wide">Login</button>
     </div>
 </form>

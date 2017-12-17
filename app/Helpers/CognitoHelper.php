@@ -183,6 +183,32 @@ class CognitoHelper
     }
 
     /**
+     * Registers a new account for the user
+     *
+     * @param string $username
+     * @param string $password
+     * @param string $shopifyId
+     * @return \Aws\Result
+     */
+    public function signup($username, $password, $shopifyId)
+    {
+        $result = $this->client->signUp([
+            'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
+            'Password' => $password,
+            'SecretHash' => $this->srp->getSecretHash($username),
+            'Username' => $username,
+            'UserAttributes' => [
+                [
+                    'Name' => 'custom:shopifyId',
+                    'Value' => $shopifyId
+                ]
+            ]
+        ]);
+
+        return $result;
+    }
+
+    /**
      * Redirects a user back to their callback url along with their IdToken and RefreshToken from AWS
      *
      * @param \Aws\Result AuthenticationResultType $authenticationResults

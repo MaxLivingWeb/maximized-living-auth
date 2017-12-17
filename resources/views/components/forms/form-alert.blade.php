@@ -2,7 +2,7 @@
     <div class="formErrors">
         @foreach($errors as $error)
             <div class="alert alert-danger">
-                <p>{{ $error }}</p>
+                <p>{!! $error !!}</p>
             </div>
         @endforeach
     </div>
