@@ -13,42 +13,51 @@ class ForgotPasswordController extends Controller
         return view('send-code');
     }
 
+    public function step2(Request $request)
+    {
+        return view('forgot-password');
+    }
+
     public function sendCode(Request $request)
     {
-        $username = $request->input('username');
+        $request->validate([
+            'username' => 'required|email'
+        ]);
 
-        //TODO: Validate
+        $username = $request->input('username');
 
         $cognito = new CognitoHelper();
         try {
-            $result = $cognito->sendPasswordCode($username);
+            $cognito->sendPasswordCode($username);
         }
         catch(AwsException $e) {
-            return redirect()->back()->withErrors([$e->getAwsErrorMessage()]);
         }
 
         session()->put('forgotPasswordUsername', $username);
 
-        return view('forgot-password');
+        return redirect()->route('forgotPassword.Step2');
     }
 
     public function updatePassword(Request $request)
     {
+        $request->validate([
+            'password'         => 'required|min:8|confirmed|regex:/^.*(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$/',
+            'verificationCode' => 'required'
+        ]);
+
         $username = session()->get('forgotPasswordUsername');
         $password = $request->input('password');
-        $confirmPassword = $request->input('confirmPassword');
         $verificationCode = $request->input('verificationCode');
 
-        //TODO: Validate
 
         $cognito = new CognitoHelper();
         try {
-            $result = $cognito->updatePassword($username, $password, $verificationCode);
+            $cognito->updatePassword($username, $password, $verificationCode);
         }
         catch(AwsException $e) {
             return view('forgot-password')->withErrors([$e->getAwsErrorMessage()]);
         }
 
-        return redirect()->route('home');
+        return redirect()->route('login');
     }
 }
