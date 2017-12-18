@@ -25,5 +25,9 @@ Route::get('/forgot-password', 'ForgotPasswordController@index')->name('forgotPa
 Route::post('/forgot-password', 'ForgotPasswordController@sendCode')->name('sendCode')->middleware('VerifySetup');
 Route::post('/update-password', 'ForgotPasswordController@updatePassword')->name('updatePassword')->middleware('VerifySetup');
 
-Route::get('/register', 'RegisterController@index')->name('register');
-Route::post('/register', 'RegisterController@submit')->name('submitRegister');
+Route::group(['prefix' => 'register'], function() {
+    Route::get('/', 'RegisterController@index')->name('register');
+    Route::post('/', 'RegisterController@submit')->name('submitRegister');
+    Route::get('/verify', 'RegisterController@verify')->name('verify');
+    Route::post('/verify', 'RegisterController@verifySubmit')->name('verifySubmit');
+});

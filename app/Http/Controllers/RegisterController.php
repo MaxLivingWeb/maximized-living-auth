@@ -58,11 +58,60 @@ class RegisterController extends Controller
                 $request->input('password'),
                 strval($shopifyId)
             );
+
+            session()->put('verifyUsername', $request->input('username'));
         }
         catch (AwsException $e) {
             return redirect()->back()->withErrors([$e->getAwsErrorMessage()]);
         }
 
-        return redirect()->route('login');
+        return redirect()->route('verify');
+    }
+
+    public function verify(Request $request)
+    {
+        if(session()->has('verifyUsername') && $request->has('code')) {
+            //We have both username and code, automatically verify the user
+            return $this->verifyUser(
+                session()->get('verifyUsername'),
+                $request->input('code')
+            );
+        }
+
+        return view('verify', [
+            'askForEmail' => !session()->has('verifyUsername'),
+            'code' => $request->input('code')
+        ]);
+    }
+
+    public function verifySubmit(Request $request)
+    {
+        $validate = [
+            'verificationCode' => 'required'
+        ];
+        $username = session()->get('verifyUsername');
+        if(!session()->has('verifyUsername')) {
+            $validate['email'] = 'required';
+            $username = $request->input('email');
+        }
+
+        $request->validate($validate);
+
+        return $this->verifyUser($username, $request->input('verificationCode'));
+    }
+
+    private function verifyUser($username, $code)
+    {
+        try {
+            $cognito = new CognitoHelper();
+            $cognito->confirmSignup($username, $code);
+        }
+        catch(AwsException $e) {
+            return redirect()->back()->withErrors([__('auth.failedToVerify')]);
+        }
+
+        session()->forget('verifyUsername');
+
+        return redirect()->route('login')->with('messages', [__('auth.emailVerified')]);
     }
 }

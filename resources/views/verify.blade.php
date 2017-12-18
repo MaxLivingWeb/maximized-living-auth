@@ -15,18 +15,17 @@
             </div>
             <div class="container">
                 <div class="welcomeCard card">
-                    <h2>Login</h2>
-                    <p>If you have an account, please login below</p>
-
-                    @if(session('messages'))
-                        @include('components/forms/form-alert', ['messages' => session('messages')])
-                    @endif
+                    <h2>Verify Email</h2>
+                    <p>We've emailed you a verification code</p>
 
                     @if($errors->any())
                         @include('components/forms/form-alert', ['errors' => $errors->all()])
                     @endif
 
-                    @include('components/forms/login-form')
+                    @include('components/forms/verify-form', [
+                        'askForEmail' => $askForEmail,
+                        'code'  => $code
+                    ])
                 </div>
             </div>
             <div class="right bubbleBgContainer">

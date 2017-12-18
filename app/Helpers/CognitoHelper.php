@@ -209,6 +209,25 @@ class CognitoHelper
     }
 
     /**
+     * Confirms the users email/signup
+     *
+     * @param string $username
+     * @param string $code
+     * @return \Aws\Result
+     */
+    public function confirmSignup($username, $code)
+    {
+        $result = $this->client->confirmSignUp([
+            'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
+            'ConfirmationCode' => $code,
+            'SecretHash' => $this->srp->getSecretHash($username),
+            'Username' => $username
+        ]);
+
+        return $result;
+    }
+
+    /**
      * Redirects a user back to their callback url along with their IdToken and RefreshToken from AWS
      *
      * @param \Aws\Result AuthenticationResultType $authenticationResults
