@@ -2,13 +2,13 @@
     {{ csrf_field() }}
     @if($askForEmail)
     <div class="inputField">
-        <label for="password">Email Address</label>
+        <label for="email">Email Address</label>
         <input type="text" name="email" id="email" placeholder="Email Address" required>
     </div>
     @endif
     @if(!isset($code))
     <div class="inputField">
-        <label for="password">Verification Code</label>
+        <label for="verificationCode">Verification Code</label>
         <input type="text" name="verificationCode" id="verificationCode" placeholder="Verification Code" required>
     </div>
     @else

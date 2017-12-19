@@ -18,13 +18,10 @@
                     <h2>Login</h2>
                     <p>If you have an account, please login below</p>
 
-                    @if(session('messages'))
-                        @include('components/forms/form-alert', ['messages' => session('messages')])
-                    @endif
-
-                    @if($errors->any())
-                        @include('components/forms/form-alert', ['errors' => $errors->all()])
-                    @endif
+                    @include('components/forms/form-alert', [
+                        'errors' => $errors->all(),
+                        'messages' => session('messages')
+                    ])
 
                     @include('components/forms/login-form')
                 </div>

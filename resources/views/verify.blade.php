@@ -4,7 +4,7 @@
     <section class="heroAlternative heroAlternative-padded centerAlign border-faintGrey">
         <div class="container">
             <div class="heroContent">
-                <h1 class="heroHeadline">My Account</h1>
+                <h1 class="heroHeadline">Verify Account</h1>
             </div>
         </div>
     </section>
@@ -18,9 +18,7 @@
                     <h2>Verify Email</h2>
                     <p>We've emailed you a verification code</p>
 
-                    @if($errors->any())
-                        @include('components/forms/form-alert', ['errors' => $errors->all()])
-                    @endif
+                    @include('components/forms/form-alert', ['errors' => $errors->all()])
 
                     @include('components/forms/verify-form', [
                         'askForEmail' => $askForEmail,

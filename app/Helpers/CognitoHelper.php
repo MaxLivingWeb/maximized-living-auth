@@ -215,11 +215,11 @@ class CognitoHelper
      * @param string $code
      * @return \Aws\Result
      */
-    public function confirmSignup($username, $code)
+    public function confirmSignup($username, $confirmationCode)
     {
         $result = $this->client->confirmSignUp([
             'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
-            'ConfirmationCode' => $code,
+            'ConfirmationCode' => $confirmationCode,
             'SecretHash' => $this->srp->getSecretHash($username),
             'Username' => $username
         ]);
