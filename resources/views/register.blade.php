@@ -18,9 +18,7 @@
                     <h2>Register</h2>
                     <p>Enter your details below</p>
 
-                    @if($errors->any())
-                        @include('components/forms/form-alert', ['errors' => $errors->all()])
-                    @endif
+                    @include('components/forms/form-alert', ['errors' => $errors->all()])
 
                     @include('components/forms/register-form')
                 </div>
