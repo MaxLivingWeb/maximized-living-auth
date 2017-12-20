@@ -100,11 +100,11 @@ class RegisterController extends Controller
         return $this->verifyUser($username, $request->input('verificationCode'));
     }
 
-    private function verifyUser($username, $code)
+    private function verifyUser($username, $verificationCode)
     {
         try {
             $cognito = new CognitoHelper();
-            $cognito->confirmSignup($username, $code);
+            $cognito->confirmSignup($username, $verificationCode);
         }
         catch(AwsException $e) {
             return redirect()->back()->withErrors([__('auth.failedToVerify')]);
