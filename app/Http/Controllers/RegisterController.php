@@ -71,7 +71,7 @@ class RegisterController extends Controller
     public function verify(Request $request)
     {
         if(session()->has('verifyUsername') && $request->has('verificationCode')) {
-            //We have both username and code, automatically verify the user
+            //We have both username and verificationCode, automatically verify the user
             return $this->verifyUser(
                 session()->get('verifyUsername'),
                 $request->input('verificationCode')
@@ -80,7 +80,7 @@ class RegisterController extends Controller
 
         return view('verify', [
             'askForEmail' => !session()->has('verifyUsername'),
-            'code' => $request->input('verificationCode')
+            'verificationCode' => $request->input('verificationCode')
         ]);
     }
 

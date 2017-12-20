@@ -22,7 +22,7 @@
 
                     @include('components/forms/verify-form', [
                         'askForEmail' => $askForEmail,
-                        'code'  => $code
+                        'verificationCode'  => $verificationCode
                     ])
                 </div>
             </div>

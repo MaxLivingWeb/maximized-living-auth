@@ -212,7 +212,7 @@ class CognitoHelper
      * Confirms the users email/signup
      *
      * @param string $username
-     * @param string $code
+     * @param string $verificationCode
      * @return \Aws\Result
      */
     public function confirmSignup($username, $verificationCode)
