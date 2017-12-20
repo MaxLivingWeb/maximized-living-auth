@@ -27,7 +27,7 @@ Route::post('/update-password', 'ForgotPasswordController@updatePassword')->name
 
 Route::group(['prefix' => 'register'], function() {
     Route::get('/', 'RegisterController@index')->name('register');
-    Route::post('/', 'RegisterController@registerSubmit')->name('submitRegister');
+    Route::post('/', 'RegisterController@registerSubmit')->name('registerSubmit');
     Route::get('/verify', 'RegisterController@verify')->name('verify');
     Route::post('/verify', 'RegisterController@verifySubmit')->name('verifySubmit');
 });
