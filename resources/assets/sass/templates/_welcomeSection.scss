@@ -1,14 +1,10 @@
 .welcomeSection {
     margin-top: 0;
     @media (min-width: $tabletBreakpoint) {
-        position: absolute;
-        width: 100%;
-        top: 50%;
-        transform: translateY(-50%);
         margin-top: 1.875rem;
     }
 
     .welcomeCard {
-        max-width:40rem;
+        max-width: 40rem;
     }
 }
