@@ -11,6 +11,9 @@ PHP must be compiled with GMP support. [Instructions](http://php.net/manual/en/g
 > 3. `AWS_COGNITO_USER_POOL_ID`. The [user pool](https://us-east-2.console.aws.amazon.com/cognito/users/) ID 
 > 4. `AWS_COGNITO_APP_CLIENT_ID`. App client ID. Must be a client of the user pool ID 
 > 5. `AWS_COGNITO_APP_CLIENT_SECRET`. App client secret.
+> 6. `SHOPIFY_API_KEY`. Shopify Application API key
+> 7. `SHOPIFY_API_PASSWORD`. Shopify Application API password
+> 8. `SHOPIFY_API_STORE`. Shopify store handle
 2. run `php artisan key:generate` to generate a new Laravel application key
 3. run `composer install` to install required composer packages
 4. run `npm install` to install required npm packages

@@ -15,7 +15,7 @@ class RegisterController extends Controller
         return view('register');
     }
 
-    public function submit(Request $request)
+    public function registerSubmit(Request $request)
     {
         $request->validate([
             'username' => 'required|email',
@@ -70,41 +70,41 @@ class RegisterController extends Controller
 
     public function verify(Request $request)
     {
-        if(session()->has('verifyUsername') && $request->has('code')) {
-            //We have both username and code, automatically verify the user
+        if(session()->has('verifyUsername') && $request->has('verificationCode')) {
+            //We have both username and verificationCode, automatically verify the user
             return $this->verifyUser(
                 session()->get('verifyUsername'),
-                $request->input('code')
+                $request->input('verificationCode')
             );
         }
 
         return view('verify', [
             'askForEmail' => !session()->has('verifyUsername'),
-            'code' => $request->input('code')
+            'verificationCode' => $request->input('verificationCode')
         ]);
     }
 
     public function verifySubmit(Request $request)
     {
-        $validate = [
+        $fields = [
             'verificationCode' => 'required'
         ];
         $username = session()->get('verifyUsername');
         if(!session()->has('verifyUsername')) {
-            $validate['email'] = 'required';
+            $fields['email'] = 'required';
             $username = $request->input('email');
         }
 
-        $request->validate($validate);
+        $request->validate($fields);
 
         return $this->verifyUser($username, $request->input('verificationCode'));
     }
 
-    private function verifyUser($username, $code)
+    private function verifyUser($username, $verificationCode)
     {
         try {
             $cognito = new CognitoHelper();
-            $cognito->confirmSignup($username, $code);
+            $cognito->confirmSignup($username, $verificationCode);
         }
         catch(AwsException $e) {
             return redirect()->back()->withErrors([__('auth.failedToVerify')]);

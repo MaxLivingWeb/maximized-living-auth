@@ -4,7 +4,7 @@
     <section class="heroAlternative heroAlternative-padded centerAlign border-faintGrey">
         <div class="container">
             <div class="heroContent">
-                <h1 class="heroHeadline">My Account</h1>
+                <h1 class="heroHeadline">Register</h1>
             </div>
         </div>
     </section>
@@ -18,9 +18,7 @@
                     <h2>Register</h2>
                     <p>Enter your details below</p>
 
-                    @if($errors->any())
-                        @include('components/forms/form-alert', ['errors' => $errors->all()])
-                    @endif
+                    @include('components/forms/form-alert', ['errors' => $errors->all()])
 
                     @include('components/forms/register-form')
                 </div>
@@ -36,12 +34,10 @@
     <script type="text/javascript">
         document.addEventListener('readystatechange', () => {
             if (document.readyState === 'complete') {
-                const countries = JSON.parse('@json(__('states'))');
+                var countries = JSON.parse('@json(__('states'))');
 
-                const country = document.getElementById('country');
-                country.addEventListener('change', toggleStates);
-
-                function toggleStates(e) {
+                var country = document.getElementById('country');
+                country.addEventListener('change', function(e) {
                     const stateSelect = document.getElementById('state');
                     stateSelect.innerHTML = '';
                     const states = countries[country.value]
@@ -49,7 +45,7 @@
                     for(state in states) {
                         stateSelect.add(new Option(states[state], state));
                     }
-                }
+                });
             }
         });
     </script>
