@@ -100,8 +100,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'password' => [
+            'regex' => 'Password must contain: </br>1 lowercase letter </br>1 uppercase letter </br>1 number </br>1 special character',
         ],
     ],
 
