@@ -13,7 +13,7 @@ class ForgotPasswordController extends Controller
         return view('send-code');
     }
 
-    public function step2(Request $request)
+    public function verifyCode(Request $request)
     {
         return view('forgot-password');
     }
@@ -35,7 +35,7 @@ class ForgotPasswordController extends Controller
 
         session()->put('forgotPasswordUsername', $username);
 
-        return redirect()->route('forgotPassword.Step2');
+        return redirect()->route('forgotPassword.verifyCode');
     }
 
     public function updatePassword(Request $request)
