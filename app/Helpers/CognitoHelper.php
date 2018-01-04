@@ -183,6 +183,51 @@ class CognitoHelper
     }
 
     /**
+     * Registers a new account for the user
+     *
+     * @param string $username
+     * @param string $password
+     * @param string $shopifyId
+     * @return \Aws\Result
+     */
+    public function signup($username, $password, $shopifyId)
+    {
+        $result = $this->client->signUp([
+            'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
+            'Password' => $password,
+            'SecretHash' => $this->srp->getSecretHash($username),
+            'Username' => $username,
+            'UserAttributes' => [
+                [
+                    'Name' => 'custom:shopifyId',
+                    'Value' => $shopifyId
+                ]
+            ]
+        ]);
+
+        return $result;
+    }
+
+    /**
+     * Confirms the users email/signup
+     *
+     * @param string $username
+     * @param string $verificationCode
+     * @return \Aws\Result
+     */
+    public function confirmSignup($username, $verificationCode)
+    {
+        $result = $this->client->confirmSignUp([
+            'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
+            'ConfirmationCode' => $verificationCode,
+            'SecretHash' => $this->srp->getSecretHash($username),
+            'Username' => $username
+        ]);
+
+        return $result;
+    }
+
+    /**
      * Redirects a user back to their callback url along with their IdToken and RefreshToken from AWS
      *
      * @param \Aws\Result AuthenticationResultType $authenticationResults
@@ -192,11 +237,14 @@ class CognitoHelper
     {
         session()->forget('cognitoSession');
 
-        return redirect(session()->get('redirect_uri') . '?' .
-            'idToken=' . $authenticationResults['IdToken']
-        );
-
         //TODO: Refresh token has been removed. We need to find an alternative way to send the refresh token without exceeding the URL length limit
         //'refreshToken=' . $authenticationResults['RefreshToken']
+        $params = '?idToken=' . $authenticationResults['IdToken'];
+        if (session()->has('redirect_path')) {
+            $params .= '&redirect_path='.urlencode(session('redirect_path'));
+            session()->forget('redirect_path');
+        }
+
+        return redirect(session()->get('redirect_uri') . $params);
     }
 }

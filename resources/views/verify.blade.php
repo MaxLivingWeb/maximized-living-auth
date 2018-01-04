@@ -4,7 +4,7 @@
     <section class="heroAlternative heroAlternative-padded centerAlign border-faintGrey">
         <div class="container">
             <div class="heroContent">
-                <h1 class="heroHeadline">My Account</h1>
+                <h1 class="heroHeadline">Verify Account</h1>
             </div>
         </div>
     </section>
@@ -15,15 +15,15 @@
             </div>
             <div class="container">
                 <div class="welcomeCard card">
-                    <h2>Login</h2>
-                    <p>If you have an account, please login below</p>
+                    <h2>Verify Email</h2>
+                    <p>We've emailed you a verification code</p>
 
-                    @include('components/forms/form-alert', [
-                        'errors' => $errors->all(),
-                        'messages' => session('messages')
+                    @include('components/forms/form-alert', ['errors' => $errors->all()])
+
+                    @include('components/forms/verify-form', [
+                        'askForEmail' => $askForEmail,
+                        'verificationCode'  => $verificationCode
                     ])
-
-                    @include('components/forms/login-form')
                 </div>
             </div>
             <div class="right bubbleBgContainer">

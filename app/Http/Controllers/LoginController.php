@@ -22,7 +22,13 @@ class LoginController extends Controller
             return view('error', ['error' => 'Invalid redirect_url']);
         }
 
+        // Save Redirect uri to session
         session()->put('redirect_uri', $url);
+
+        // Pass any additional params to session
+        if (!is_null($request->input('redirect_path'))) {
+            session()->put('redirect_path', $request->input('redirect_path'));
+        }
 
         return view('login');
     }
