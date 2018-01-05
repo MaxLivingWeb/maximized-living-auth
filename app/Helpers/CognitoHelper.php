@@ -252,24 +252,30 @@ class CognitoHelper
             'idToken' => $authenticationResults['IdToken']
         ];
 
-        if (session()->has('redirect_path')) {
-            $params['redirect_path'] = urlencode(session('redirect_path'));
+        if (session()->has('redirect_path')
+            && preg_match('/[a-z]/i', session('redirect_path'))
+        ) {
+            $params['redirect_path'] = session('redirect_path');
             session()->forget('redirect_path');
         }
 
+        $user = $this->validateAuthenticatedUserByToken($authenticationResults['IdToken']);
+
         // No `redirect_uri` is set, so check User's permissions and redirect where they should be
         if (!session()->has('redirect_uri')) {
-            $user = $this->validateAuthenticatedUserByToken($authenticationResults['IdToken']);
-
             if ($user->is_admin) {
                 return redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
             }
-
             if ($user->is_affiliate) {
                 $params['redirect_path'] = 'account';
                 return redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
             }
+            $params['redirect_path'] = 'account';
+            return redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
+        }
 
+        // Make sure User's redirect_uri is accessible based on their permissions
+        if (session()->get('redirect_uri') == env('MAXLIVING_ADMIN_URL') && !$user->is_admin && !$user->is_affiliate) {
             $params['redirect_path'] = 'account';
             return redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
         }
