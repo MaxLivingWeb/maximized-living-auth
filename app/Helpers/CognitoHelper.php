@@ -2,8 +2,17 @@
 
 namespace App\Helpers;
 
+use App\Helpers\AuthenticatedUserHelper;
 use Aws\Sdk;
 use Illuminate\Routing\Redirector;
+use Jose\Factory\JWKFactory;
+use Jose\Loader;
+use Jose\Checker\CheckerManager;
+use Jose\Checker\AudienceChecker;
+use Jose\Checker\CriticalHeaderChecker;
+use Jose\Checker\ExpirationTimeChecker;
+use Jose\Checker\NotBeforeChecker;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class CognitoHelper
 {
@@ -239,12 +248,76 @@ class CognitoHelper
 
         //TODO: Refresh token has been removed. We need to find an alternative way to send the refresh token without exceeding the URL length limit
         //'refreshToken=' . $authenticationResults['RefreshToken']
-        $params = '?idToken=' . $authenticationResults['IdToken'];
+        $params = [
+            'idToken' => $authenticationResults['IdToken']
+        ];
+
         if (session()->has('redirect_path')) {
-            $params .= '&redirect_path='.urlencode(session('redirect_path'));
+            $params['redirect_path'] = urlencode(session('redirect_path'));
             session()->forget('redirect_path');
         }
 
-        return redirect(session()->get('redirect_uri') . $params);
+        // No `redirect_uri` is set, so check User's permissions and redirect where they should be
+        if (!session()->has('redirect_uri')) {
+            $user = $this->validateAuthenticatedUserByToken($authenticationResults['IdToken']);
+
+            if ($user->is_admin) {
+                return redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
+            }
+
+            if ($user->is_affiliate) {
+                $params['redirect_path'] = 'account';
+                return redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
+            }
+
+            $params['redirect_path'] = 'account';
+            return redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
+        }
+
+        return redirect(session()->get('redirect_uri') . $this->url_query($params));
     }
+
+    private function validateAuthenticatedUserByToken($token)
+    {
+        $cache = new FilesystemAdapter();
+        $jwk_set = JWKFactory::createFromJKU('https://cognito-idp.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_COGNITO_USER_POOL_ID') . '/.well-known/jwks.json', false, $cache);
+        $loader = new Loader();
+
+        try {
+            $jws = $loader->loadAndVerifySignatureUsingKeySet(
+                $token,
+                $jwk_set,
+                ['RS256'],
+                $signature_index
+            );
+
+            $checker_manager = new CheckerManager();
+            $checker_manager->addClaimChecker(new ExpirationTimeChecker());
+            $checker_manager->addClaimChecker(new NotBeforeChecker());
+            $checker_manager->addClaimChecker(new AudienceChecker(env('AWS_COGNITO_APP_CLIENT_ID')));
+            $checker_manager->addHeaderChecker(new CriticalHeaderChecker());
+            $checker_manager->checkJWS($jws, $signature_index);
+        }
+        catch(\Exception $e) {
+            // signature not verified
+            return false;
+        }
+
+        // Token is verified, save user
+        $user = $loader->load($token)->getPayload();
+
+        // Tidy up user data to sendback
+        return (object)[
+            'email' => $user['email'],
+            'permissions' => AuthenticatedUserHelper::getUserPermissions($user),
+            'is_admin' => AuthenticatedUserHelper::checkIfAdmin($user),
+            'is_affiliate' => AuthenticatedUserHelper::checkIfAffiliate($user)
+        ];
+    }
+
+    private function url_query($params)
+    {
+        return '?' . http_build_query($params, '', '&');
+    }
+
 }
