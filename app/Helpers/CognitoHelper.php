@@ -5,14 +5,7 @@ namespace App\Helpers;
 use App\Helpers\AuthenticatedUserHelper;
 use Aws\Sdk;
 use Illuminate\Routing\Redirector;
-use Jose\Factory\JWKFactory;
 use Jose\Loader;
-use Jose\Checker\CheckerManager;
-use Jose\Checker\AudienceChecker;
-use Jose\Checker\CriticalHeaderChecker;
-use Jose\Checker\ExpirationTimeChecker;
-use Jose\Checker\NotBeforeChecker;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class CognitoHelper
 {
@@ -285,31 +278,7 @@ class CognitoHelper
 
     private function validateAuthenticatedUserByToken($token)
     {
-        $cache = new FilesystemAdapter();
-        $jwk_set = JWKFactory::createFromJKU('https://cognito-idp.' . env('AWS_REGION') . '.amazonaws.com/' . env('AWS_COGNITO_USER_POOL_ID') . '/.well-known/jwks.json', false, $cache);
         $loader = new Loader();
-
-        try {
-            $jws = $loader->loadAndVerifySignatureUsingKeySet(
-                $token,
-                $jwk_set,
-                ['RS256'],
-                $signature_index
-            );
-
-            $checker_manager = new CheckerManager();
-            $checker_manager->addClaimChecker(new ExpirationTimeChecker());
-            $checker_manager->addClaimChecker(new NotBeforeChecker());
-            $checker_manager->addClaimChecker(new AudienceChecker(env('AWS_COGNITO_APP_CLIENT_ID')));
-            $checker_manager->addHeaderChecker(new CriticalHeaderChecker());
-            $checker_manager->checkJWS($jws, $signature_index);
-        }
-        catch(\Exception $e) {
-            // signature not verified
-            return false;
-        }
-
-        // Token is verified, save user
         $user = $loader->load($token)->getPayload();
 
         // Tidy up user data to sendback
