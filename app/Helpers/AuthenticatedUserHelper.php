@@ -55,13 +55,17 @@ class AuthenticatedUserHelper
     }
 
     /**
-     * Check if User is an affiliate by checking for parameter `cognito:groups` being applied
+     * Check if User is an affiliate by checking `cognito:username` user data
      * @param $user
      * @return bool
      */
     public static function checkIfAffiliate($user)
     {
-        return isset($user['cognito:groups']);
+        $maxlivingAPI = new MaximizedLivingAPI();
+
+        $affiliate = (array)$maxlivingAPI->getUserAffiliate($user['cognito:username']);
+
+        return !empty($affiliate);
     }
 
 }
