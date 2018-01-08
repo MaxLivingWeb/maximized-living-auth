@@ -17,9 +17,10 @@ class NewPasswordController extends Controller
     {
         $username = session()->get('username');
         $password = $request->input('password');
-        $confirmPassword = $request->input('confirmPassword');
 
-        //TODO: Validate
+        $request->validate([
+            'password' => 'required|min:8|confirmed|regex:/^.*(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$/'
+        ]);
 
         $cognito = new CognitoHelper();
         try {

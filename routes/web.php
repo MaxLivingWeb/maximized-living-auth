@@ -23,6 +23,7 @@ Route::group(['middleware' => ['VerifySession']], function() {
 
 Route::get('/forgot-password', 'ForgotPasswordController@index')->name('forgotPassword');
 Route::post('/forgot-password', 'ForgotPasswordController@sendCode')->name('sendCode');
+Route::get('/forgot-password/verify', 'ForgotPasswordController@verifyCode')->name('forgotPassword.verifyCode');
 Route::post('/update-password', 'ForgotPasswordController@updatePassword')->name('updatePassword');
 
 Route::group(['prefix' => 'register'], function() {
