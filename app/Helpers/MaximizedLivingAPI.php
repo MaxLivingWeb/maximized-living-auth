@@ -20,25 +20,27 @@ class MaximizedLivingAPI
      * Permissions
      */
 
-    public function getPermissions()
-    {
-        $result = $this->client->get('permissions');
-
-        return json_decode($result->getBody()->getContents());
-    }
-
     public function getUserPermissions($permissionSettings = null)
     {
         if ($permissionSettings === null) {
             return false;
         }
 
-        $permissions = $this->getPermissions();
+        // Permission Values as they are saved into the Maximizedliving API
+        $availablePermissions = [
+            'dashboard-usermanagement',
+            'dashboard-commissions',
+            'dashboard-wholesaler',
+            'public-website',
+            'contentportal'
+        ];
+
         $userPermissions = explode(',', $permissionSettings);
-        return collect($permissions)
+
+        return collect($availablePermissions)
             ->mapWithKeys(function($permission) use($userPermissions) {
                 return [
-                    $permission->key => collect($userPermissions)->contains($permission->key)
+                    $permission => collect($userPermissions)->contains($permission)
                 ];
             })
             ->all();
