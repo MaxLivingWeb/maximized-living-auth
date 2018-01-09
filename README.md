@@ -14,7 +14,10 @@ PHP must be compiled with GMP support. [Instructions](http://php.net/manual/en/g
 > 6. `SHOPIFY_API_KEY`. Shopify Application API key
 > 7. `SHOPIFY_API_PASSWORD`. Shopify Application API password
 > 8. `SHOPIFY_API_STORE`. Shopify store handle
-2. run `php artisan key:generate` to generate a new Laravel application key
+> 9. `MAXLIVING_API_URL`. Maximized Living API URL
+> 10. `MAXLIVING_ADMIN_URL`. Maximized Living Admin Portal URL. Need to add `/token`
+> 11. `MAXLIVING_STORE_URL`. Maximized Living Store URL. Need to add `/token`
+2. run `php artisan key:generate` to generate a new Laravel application key.
 3. run `composer install` to install required composer packages
 4. run `npm install` to install required npm packages
 5. run `npm run dev` to compile assets
