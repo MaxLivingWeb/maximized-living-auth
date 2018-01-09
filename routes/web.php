@@ -13,18 +13,18 @@
 
 Route::get('/', 'LoginController@index')->name('home');
 
-Route::get('/login', 'LoginController@index')->name('login')->middleware('VerifySetup');
-Route::post('/login', 'LoginController@login')->name('submitLogin')->middleware('VerifySetup');
+Route::get('/login', 'LoginController@index')->name('login');
+Route::post('/login', 'LoginController@login')->name('submitLogin');
 
-Route::group(['middleware' => ['VerifySetup', 'VerifySession']], function() {
+Route::group(['middleware' => ['VerifySession']], function() {
     Route::get('/new-password', 'NewPasswordController@index')->name('newPassword')->middleware('VerifySession');
     Route::post('/new-password', 'NewPasswordController@updatePassword')->name('submitNewPassword')->middleware('VerifySession');
 });
 
-Route::get('/forgot-password', 'ForgotPasswordController@index')->name('forgotPassword')->middleware('VerifySetup');
-Route::post('/forgot-password', 'ForgotPasswordController@sendCode')->name('sendCode')->middleware('VerifySetup');
-Route::get('/forgot-password/verify', 'ForgotPasswordController@verifyCode')->name('forgotPassword.verifyCode')->middleware('VerifySetup');
-Route::post('/update-password', 'ForgotPasswordController@updatePassword')->name('updatePassword')->middleware('VerifySetup');
+Route::get('/forgot-password', 'ForgotPasswordController@index')->name('forgotPassword');
+Route::post('/forgot-password', 'ForgotPasswordController@sendCode')->name('sendCode');
+Route::get('/forgot-password/verify', 'ForgotPasswordController@verifyCode')->name('forgotPassword.verifyCode');
+Route::post('/update-password', 'ForgotPasswordController@updatePassword')->name('updatePassword');
 
 Route::group(['prefix' => 'register'], function() {
     Route::get('/', 'RegisterController@index')->name('register');
