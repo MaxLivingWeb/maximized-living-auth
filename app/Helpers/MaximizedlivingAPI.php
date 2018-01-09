@@ -24,7 +24,7 @@ class MaximizedLivingAPI
     public function getUserPermissions($permissionSettings = null)
     {
         if ($permissionSettings === null) {
-            return false;
+            return;
         }
 
         $permissions = $this->getPermissions();
