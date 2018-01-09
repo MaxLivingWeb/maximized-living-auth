@@ -12,27 +12,9 @@ class AuthenticatedUserHelper
      */
     public static function getUserPermissions($user)
     {
-        if (!isset($user['custom:permissions'])) {
-            return;
-        }
+        $maxlivingAPI = new MaximizedLivingAPI();
 
-        // Permission Values as they are saved into the Maximizedliving API
-        $availablePermissions = [
-            'dashboard-usermanagement',
-            'dashboard-commissions',
-            'dashboard-wholesaler',
-            'public-website',
-            'contentportal'
-        ];
-
-        $userPermissions = explode(',', $user['custom:permissions']);
-
-        return collect($availablePermissions)
-            ->mapWithKeys(function($permission) use($userPermissions) {
-                return [
-                    $permission => collect($userPermissions)->contains($permission)
-                ];
-            });
+        return collect($maxlivingAPI->getUserPermissions($user['custom:permissions']));
     }
 
     /**
