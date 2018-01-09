@@ -272,7 +272,7 @@ class CognitoHelper
             $params['redirect_path'] = 'account';
             return redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
         }
-        
+
         return redirect(session()->get('redirect_uri') . $this->url_query($params));
     }
 

@@ -12,6 +12,10 @@ class AuthenticatedUserHelper
      */
     public static function getUserPermissions($user)
     {
+        if (!isset($user['custom:permissions'])) {
+            return;
+        }
+
         $maxlivingAPI = new MaximizedLivingAPI();
 
         return collect($maxlivingAPI->getUserPermissions($user['custom:permissions']));
