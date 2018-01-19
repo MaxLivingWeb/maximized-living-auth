@@ -34,9 +34,10 @@ class CognitoHelper
      */
     public function checkCallbackUrl($url)
     {
-        if(env('APP_ENV') !== 'production') {
+        //TODO: Enable when https is setup on all sites
+        //if(env('APP_ENV') !== 'production') {
             return true;
-        }
+        //}
 
         $result = $this->client->describeUserPoolClient([
             'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
