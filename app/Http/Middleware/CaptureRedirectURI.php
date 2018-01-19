@@ -21,7 +21,7 @@ class CaptureRedirectURI
             $cognito = new CognitoHelper();
             if($cognito->checkCallbackUrl($url)) {
                 // Save Redirect uri to session
-                session()->put('redirect_uri', $url);
+                session(['redirect_uri' => $url]);
             }
         }
 
