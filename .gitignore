@@ -6,7 +6,6 @@
 /public/images/*
 /public/fonts/*
 /public/assets/*
-/public/.htaccess
 /public/mix-manifest.json
 /storage/*.key
 /storage/framework/sessions
