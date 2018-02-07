@@ -85,7 +85,6 @@ class CognitoHelper
      */
     public function login($username, $password)
     {
-        $username = strtolower($username);
         $secrethash = $this->srp->getSecretHash($username);
         $srpA = $this->srp->calculateA();
 
