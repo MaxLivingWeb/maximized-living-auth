@@ -85,6 +85,7 @@ class CognitoHelper
      */
     public function login($username, $password)
     {
+        $username = strtolower($username);
         $secrethash = $this->srp->getSecretHash($username);
         $srpA = $this->srp->calculateA();
 
@@ -133,6 +134,7 @@ class CognitoHelper
      */
     public function newPassword($username, $password)
     {
+        $username = strtolower($username);
         $result = $this->client->respondToAuthChallenge([
             'ChallengeName' => 'NEW_PASSWORD_REQUIRED',
             'ChallengeResponses' => [
@@ -155,6 +157,7 @@ class CognitoHelper
      */
     public function sendPasswordCode($username)
     {
+        $username = strtolower($username);
         $result = $this->client->forgotPassword([
             'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
             'SecretHash' => $this->srp->getSecretHash($username),
@@ -174,6 +177,7 @@ class CognitoHelper
      */
     public function updatePassword($username, $password, $verificationCode)
     {
+        $username = strtolower($username);
         $result = $this->client->confirmForgotPassword([
             'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
             'ConfirmationCode' => $verificationCode,
@@ -195,6 +199,7 @@ class CognitoHelper
      */
     public function signup($username, $password, $shopifyId)
     {
+        $username = strtolower($username);
         $result = $this->client->signUp([
             'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
             'Password' => $password,
@@ -220,6 +225,7 @@ class CognitoHelper
      */
     public function confirmSignup($username, $verificationCode)
     {
+        $username = strtolower($username);
         $result = $this->client->confirmSignUp([
             'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
             'ConfirmationCode' => $verificationCode,
