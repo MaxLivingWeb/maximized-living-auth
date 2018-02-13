@@ -1,6 +1,14 @@
 <form method="post" action="{{ route('registerSubmit') }}">
     {{ csrf_field() }}
     <div class="inputField">
+        <label for="firstName">First Name *</label>
+        <input type="text" name="firstName" id="firstName" placeholder="First Name" value="{{ old('firstName') }}" required/>
+    </div>
+    <div class="inputField">
+        <label for="lastName">Last Name *</label>
+        <input type="text" name="lastName" id="lastName" placeholder="Last Name" value="{{ old('lastName') }}" required/>
+    </div>
+    <div class="inputField">
         <label for="username">Email *</label>
         <input type="email" name="username" id="username" placeholder="Email" value="{{ old('username') }}" required/>
     </div>
@@ -11,6 +19,10 @@
     <div class="inputField">
         <label for="password_confirmation">Confirm Password*</label>
         <input type="password" name="password_confirmation" id="password_confirmation" placeholder="Confirm Password" required/>
+    </div>
+    <div class="inputField">
+        <label for="businessName">Company *</label>
+        <input type="text" name="businessName" id="businessName" placeholder="Company" value="{{ old('businessName') }}" required/>
     </div>
     <div class="inputField">
         <label for="address1">Address *</label>
