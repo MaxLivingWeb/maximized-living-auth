@@ -17,34 +17,41 @@ class RegisterController extends Controller
 
     public function registerSubmit(Request $request)
     {
-        $request->validate([
-            'username' => 'required|email',
-            'password' => 'required|min:8|confirmed|regex:/^.*(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$/',
-            'address1' => 'required',
-            'zip'      => 'required',
-            'country'  => 'required',
-            'state'    => 'required',
-            'city'     => 'required',
+        $validatedData = $request->validate([
+            'firstName'    => 'required',
+            'lastName'     => 'required',
+            'username'     => 'required|email',
+            'password'     => 'required|min:8|confirmed|regex:/^.*(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$/',
+            'businessName' => 'required',
+            'address1'     => 'required',
+            'address2'     => 'nullable',
+            'zip'          => 'required',
+            'country'      => 'required',
+            'state'        => 'required',
+            'city'         => 'required',
         ]);
 
         try {
-            $country = $request->input('country');
-            $state = $request->input('state');
+            $country = $validatedData['country'];
+            $state = $validatedData['state'];
             //Shopify doesnt consider Puerto Rico as a separate country
             if($country === 'Puerto Rico') {
                 $country = 'US';
                 $state = 'PR';
             }
             $customer = [
-                'email' => $request->input('username'),
+                'first_name' => $validatedData['firstName'],
+                'last_name' => $validatedData['lastName'],
+                'email' => $validatedData['username'],
                 'addresses' => [
-                    [
-                        'address1' => $request->input('address1'),
-                        'address2' => $request->input('address2') ?? '',
-                        'zip'      => $request->input('zip'),
+                    (object)[
+                        'address1' => $validatedData['address1'],
+                        'address2' => $validatedData['address2'] ?? '',
+                        'zip'      => $validatedData['zip'],
                         'country'  => $country,
                         'province' => $state,
-                        'city'     => $request->input('city'),
+                        'city'     => $validatedData['city'],
+                        'company'  => $validatedData['businessName'],
                     ]
                 ]
             ];
