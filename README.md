@@ -17,6 +17,8 @@ PHP must be compiled with GMP support. [Instructions](http://php.net/manual/en/g
 > 9. `MAXLIVING_API_URL`. Maximized Living API URL
 > 10. `MAXLIVING_ADMIN_URL`. Maximized Living Admin Portal URL. Need to add `/token`
 > 11. `MAXLIVING_STORE_URL`. Maximized Living Store URL. Need to add `/token`
+> 12. `MAXLIVING_PUBLIC_URL`. Maximized Living Public Website URL. Need to add `/token`
+> 13. `MAXLIVING_CONTENTPORTAL_URL`. Maximized Living Content-Portal URL. Need to add `/auth/callback`
 2. run `php artisan key:generate` to generate a new Laravel application key.
 3. run `composer install` to install required composer packages
 4. run `npm install` to install required npm packages
