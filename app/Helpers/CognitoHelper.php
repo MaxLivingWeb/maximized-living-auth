@@ -262,16 +262,22 @@ class CognitoHelper
 
         // No `redirect_uri` is set, so check User's permissions and redirect where they should be
         if (!session()->has('redirect_uri')) {
+            // Automatically redirect to AdminPortal
             if ($user->is_admin) {
                 return $this->handle_redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
             }
             if ($user->is_affiliate) {
-                if (!empty($user->permissions) && $user->permissions->get('contentportal')) {
+                // Automatically redirect to ContentPortal
+                if (!empty($user->permissions)
+                    && ($user->permissions->get('contentportal') || $user->permissions->get('contentportal:administrator'))
+                ) {
                     return $this->handle_redirect(env('MAXLIVING_CONTENTPORTAL_URL') . $this->url_query($params));
                 }
+                // Automatically redirect to AdminPortal (the "My Account" page)
                 $params['redirect_path'] = 'account';
                 return $this->handle_redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
             }
+            // Automatically redirect to the Store
             $params['redirect_path'] = 'account';
             return $this->handle_redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
         }
@@ -282,6 +288,7 @@ class CognitoHelper
             return $this->handle_redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
         }
 
+        // Redirect to the provided link
         return $this->handle_redirect(session()->get('redirect_uri') . $this->url_query($params));
     }
 
