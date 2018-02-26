@@ -263,23 +263,26 @@ class CognitoHelper
         // No `redirect_uri` is set, so check User's permissions and redirect where they should be
         if (!session()->has('redirect_uri')) {
             if ($user->is_admin) {
-                return redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
+                return $this->handle_redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
             }
             if ($user->is_affiliate) {
+                if (!empty($user->permissions) && $user->permissions->get('contentportal')) {
+                    return $this->handle_redirect(env('MAXLIVING_CONTENTPORTAL_URL') . $this->url_query($params));
+                }
                 $params['redirect_path'] = 'account';
-                return redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
+                return $this->handle_redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
             }
             $params['redirect_path'] = 'account';
-            return redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
+            return $this->handle_redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
         }
 
         // Make sure User's redirect_uri is accessible based on their permissions
         if (session()->get('redirect_uri') == env('MAXLIVING_ADMIN_URL') && !$user->is_admin && !$user->is_affiliate) {
             $params['redirect_path'] = 'account';
-            return redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
+            return $this->handle_redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
         }
 
-        return redirect(session()->get('redirect_uri') . $this->url_query($params));
+        return $this->handle_redirect(session()->get('redirect_uri') . $this->url_query($params));
     }
 
     private function validateAuthenticatedUserByToken($token)
@@ -294,6 +297,19 @@ class CognitoHelper
             'is_admin' => AuthenticatedUserHelper::checkIfAdmin($user),
             'is_affiliate' => AuthenticatedUserHelper::checkIfAffiliate($user)
         ];
+    }
+
+    /**
+     * Forget session variables (needed only for logging in) and then handle the redirect
+     * @param $url
+     * @return \Illuminate\Http\RedirectResponse|Redirector
+     */
+    private function handle_redirect($to)
+    {
+        session()->forget('redirect_uri');
+        session()->forget('redirect_path');
+
+        return redirect($to);
     }
 
     private function url_query($params)
