@@ -25,7 +25,7 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        $username = $request->input('username');
+        $username = strtolower($request->input('username'));
         $password = $request->input('password');
 
         $cognito = new CognitoHelper();
