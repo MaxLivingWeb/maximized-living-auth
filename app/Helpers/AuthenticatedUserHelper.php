@@ -7,8 +7,8 @@ class AuthenticatedUserHelper
 
     /**
      * Get Authenticated User Permissions
-     * @param $user | Cognito User Object
-     * @return \Illuminate\Support\Collection|void
+     * @param $user
+     * @return array
      */
     public static function getUserPermissions($user)
     {
@@ -19,6 +19,20 @@ class AuthenticatedUserHelper
         $maxlivingAPI = new MaximizedLivingAPI();
 
         return collect($maxlivingAPI->getUserPermissions($user['custom:permissions']));
+    }
+
+    /**
+     * Get Affiliate Data for User
+     * @param $user
+     * @return array|null
+     */
+    public static function getUserAffiliateData($user)
+    {
+        $maxlivingAPI = new MaximizedLivingAPI();
+
+        $affiliate = (array)$maxlivingAPI->getUserAffiliate($user['cognito:username']) ?? null;
+
+        return $affiliate;
     }
 
     /**
@@ -47,9 +61,7 @@ class AuthenticatedUserHelper
      */
     public static function checkIfAffiliate($user)
     {
-        $maxlivingAPI = new MaximizedLivingAPI();
-
-        $affiliate = (array)$maxlivingAPI->getUserAffiliate($user['cognito:username']);
+        $affiliate = self::getUserAffiliateData($user);
 
         return !empty($affiliate);
     }
