@@ -260,49 +260,47 @@ class CognitoHelper
 
         $user = $this->validateAuthenticatedUserByToken($authenticationResults['IdToken']);
 
-        // No `redirect_uri` is set, so check User's permissions and redirect where they should be
-        if (!session()->has('redirect_uri')) {
-            // Automatically redirect to AdminPortal
-            if ($user->is_admin) {
-                return $this->handle_redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
+        // Redirect to the provided link
+        if (session()->has('redirect_uri')) {
+            // Make sure User's redirect_uri is accessible based on their permissions
+            if (session()->get('redirect_uri') == env('MAXLIVING_ADMIN_URL') && !$user->is_admin && !$user->is_affiliate) {
+                $params['redirect_path'] = 'account';
+                return $this->handle_redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
             }
+            // Redirect URL is accessible, so go there
+            return $this->handle_redirect(session()->get('redirect_uri') . $this->url_query($params));
+        }
 
-            // Affiliate User redirects
-            if ($user->is_affiliate) {
-                // Specific redirects based on permissions
-                if (!empty($user->permissions)) {
-                    // Automatically redirect to ContentPortal
-                    if ($user->permissions->get('contentportal') || $user->permissions->get('contentportal:administrator')) {
-                        return $this->handle_redirect(env('MAXLIVING_CONTENTPORTAL_URL') . $this->url_query($params));
-                    }
+        // Automatically redirect to AdminPortal
+        if ($user->is_admin) {
+            return $this->handle_redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
+        }
 
-                    // Automatically redirect to Wordpress Site (if affiliate user has location website)
-                    $affiliateWebsiteURL = $user->affiliate['location']->vanity_website_url ?? null;
-                    if ($user->permissions->get('public-website')
-                        && filter_var($affiliateWebsiteURL, FILTER_VALIDATE_URL) !== FALSE
-                    ) {
-                        return $this->handle_redirect($affiliateWebsiteURL.'/wp-login.php'.$this->url_query($params));
-                    }
-                }
-
-                // Automatically redirect to AdminPortal (the "My Account" page)
+        // Affiliate User redirects
+        if ($user->is_affiliate) {
+            // No permissions. Automatically redirect to AdminPortal (the "My Account" page) since permissions are empty. From here, they can click the links to end up wherever.
+            if (empty($user->permissions)) {
                 $params['redirect_path'] = 'account';
                 return $this->handle_redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
             }
 
-            // Automatically redirect to the Store
-            $params['redirect_path'] = 'account';
-            return $this->handle_redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
+            // Automatically redirect to ContentPortal
+            if ($user->permissions->get('contentportal') || $user->permissions->get('contentportal:administrator')) {
+                return $this->handle_redirect(env('MAXLIVING_CONTENTPORTAL_URL') . $this->url_query($params));
+            }
+
+            // Automatically redirect to Wordpress Site (if affiliate user has location website)
+            $affiliateWebsiteURL = $user->affiliate['location']->vanity_website_url ?? null;
+            if ($user->permissions->get('public-website')
+                && filter_var($affiliateWebsiteURL, FILTER_VALIDATE_URL) !== FALSE
+            ) {
+                return $this->handle_redirect($affiliateWebsiteURL.'/wp-login.php'.$this->url_query($params));
+            }
         }
 
-        // Make sure User's redirect_uri is accessible based on their permissions
-        if (session()->get('redirect_uri') == env('MAXLIVING_ADMIN_URL') && !$user->is_admin && !$user->is_affiliate) {
-            $params['redirect_path'] = 'account';
-            return $this->handle_redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
-        }
-
-        // Redirect to the provided link
-        return $this->handle_redirect(session()->get('redirect_uri') . $this->url_query($params));
+        // Automatically redirect to the Store
+        $params['redirect_path'] = 'account';
+        return $this->handle_redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
     }
 
     private function validateAuthenticatedUserByToken($token)
