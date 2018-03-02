@@ -266,6 +266,7 @@ class CognitoHelper
             if ($user->is_admin) {
                 return $this->handle_redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
             }
+
             if ($user->is_affiliate) {
                 // Automatically redirect to ContentPortal
                 if (!empty($user->permissions)
@@ -273,10 +274,22 @@ class CognitoHelper
                 ) {
                     return $this->handle_redirect(env('MAXLIVING_CONTENTPORTAL_URL') . $this->url_query($params));
                 }
+
+                // Automatically redirect to Wordpress Site (if affiliate user has location website)
+                $affiliateWebsiteURL = $user->affiliate['location']->vanity_website_url ?? null;
+                if (!empty($user->permissions)
+                    && $user->permissions->get('public-website')
+                    && !empty($affiliateWebsiteURL)
+                    && filter_var($affiliateWebsiteURL, FILTER_VALIDATE_URL) !== FALSE
+                ) {
+                    return $this->handle_redirect($affiliateWebsiteURL.'/wp-login.php'.$this->url_query($params));
+                }
+
                 // Automatically redirect to AdminPortal (the "My Account" page)
                 $params['redirect_path'] = 'account';
                 return $this->handle_redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
             }
+
             // Automatically redirect to the Store
             $params['redirect_path'] = 'account';
             return $this->handle_redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
@@ -301,6 +314,7 @@ class CognitoHelper
         return (object)[
             'email' => $user['email'],
             'permissions' => AuthenticatedUserHelper::getUserPermissions($user),
+            'affiliate' => AuthenticatedUserHelper::getUserAffiliateData($user),
             'is_admin' => AuthenticatedUserHelper::checkIfAdmin($user),
             'is_affiliate' => AuthenticatedUserHelper::checkIfAffiliate($user)
         ];

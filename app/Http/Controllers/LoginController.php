@@ -15,6 +15,14 @@ class LoginController extends Controller
             session()->put('redirect_path', $request->input('redirect_path'));
         }
 
+        // If no params were passed in url, forget these session variables just in case (so that autoredirects may take place)
+        if (is_null($request->input('redirect_uri'))) {
+            session()->forget('redirect_uri');
+        }
+        if (is_null($request->input('redirect_path'))) {
+            session()->forget('redirect_path');
+        }
+
         return view('login');
     }
 

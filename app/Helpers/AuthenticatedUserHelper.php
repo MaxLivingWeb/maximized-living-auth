@@ -22,6 +22,20 @@ class AuthenticatedUserHelper
     }
 
     /**
+     * Get Affiliate Data for User
+     * @param $user | Cognito User Object
+     * @return \Illuminate\Support\Collection|void
+     */
+    public static function getUserAffiliateData($user)
+    {
+        $maxlivingAPI = new MaximizedLivingAPI();
+
+        $affiliate = (array)$maxlivingAPI->getUserAffiliate($user['cognito:username']);
+
+        return $affiliate;
+    }
+
+    /**
      * Check if User is admin based on the provided permissions array
      * @param $user
      * @return bool
@@ -47,9 +61,7 @@ class AuthenticatedUserHelper
      */
     public static function checkIfAffiliate($user)
     {
-        $maxlivingAPI = new MaximizedLivingAPI();
-
-        $affiliate = (array)$maxlivingAPI->getUserAffiliate($user['cognito:username']);
+        $affiliate = self::getUserAffiliateData($user);
 
         return !empty($affiliate);
     }
