@@ -8,6 +8,7 @@ class AuthenticatedUserHelper
     /**
      * Get Authenticated User Permissions
      * @param $user
+     * @return array
      */
     public static function getUserPermissions($user)
     {
@@ -23,6 +24,7 @@ class AuthenticatedUserHelper
     /**
      * Get Affiliate Data for User
      * @param $user
+     * @return array|null
      */
     public static function getUserAffiliateData($user)
     {
