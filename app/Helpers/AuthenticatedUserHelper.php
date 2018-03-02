@@ -28,7 +28,7 @@ class AuthenticatedUserHelper
     {
         $maxlivingAPI = new MaximizedLivingAPI();
 
-        $affiliate = (array)$maxlivingAPI->getUserAffiliate($user['cognito:username']);
+        $affiliate = (array)$maxlivingAPI->getUserAffiliate($user['cognito:username']) ?? null;
 
         return $affiliate;
     }
