@@ -282,7 +282,7 @@ class CognitoHelper
                     && !empty($affiliateWebsiteURL)
                     && filter_var($affiliateWebsiteURL, FILTER_VALIDATE_URL) !== FALSE
                 ) {
-                    return $this->handle_redirect($affiliateWebsiteURL.'/wp-login.php'.$this->url_query($params));
+                    return $this->handle_redirect($affiliateWebsiteURL . $this->url_query($params));
                 }
 
                 // Automatically redirect to AdminPortal (the "My Account" page)
