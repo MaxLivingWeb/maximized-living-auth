@@ -7,8 +7,7 @@ class AuthenticatedUserHelper
 
     /**
      * Get Authenticated User Permissions
-     * @param $user | Cognito User Object
-     * @return \Illuminate\Support\Collection|void
+     * @param $user
      */
     public static function getUserPermissions($user)
     {
@@ -23,8 +22,7 @@ class AuthenticatedUserHelper
 
     /**
      * Get Affiliate Data for User
-     * @param $user | Cognito User Object
-     * @return \Illuminate\Support\Collection|void
+     * @param $user
      */
     public static function getUserAffiliateData($user)
     {
