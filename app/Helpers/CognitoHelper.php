@@ -279,7 +279,6 @@ class CognitoHelper
                 $affiliateWebsiteURL = $user->affiliate['location']->vanity_website_url ?? null;
                 if (!empty($user->permissions)
                     && $user->permissions->get('public-website')
-                    && !empty($affiliateWebsiteURL)
                     && filter_var($affiliateWebsiteURL, FILTER_VALIDATE_URL) !== FALSE
                 ) {
                     return $this->handle_redirect($affiliateWebsiteURL.'/wp-login.php'.$this->url_query($params));
