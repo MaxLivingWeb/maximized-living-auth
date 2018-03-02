@@ -267,21 +267,22 @@ class CognitoHelper
                 return $this->handle_redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
             }
 
+            // Affiliate User redirects
             if ($user->is_affiliate) {
-                // Automatically redirect to ContentPortal
-                if (!empty($user->permissions)
-                    && ($user->permissions->get('contentportal') || $user->permissions->get('contentportal:administrator'))
-                ) {
-                    return $this->handle_redirect(env('MAXLIVING_CONTENTPORTAL_URL') . $this->url_query($params));
-                }
+                // Specific redirects based on permissions
+                if (!empty($user->permissions)) {
+                    // Automatically redirect to ContentPortal
+                    if ($user->permissions->get('contentportal') || $user->permissions->get('contentportal:administrator')) {
+                        return $this->handle_redirect(env('MAXLIVING_CONTENTPORTAL_URL') . $this->url_query($params));
+                    }
 
-                // Automatically redirect to Wordpress Site (if affiliate user has location website)
-                $affiliateWebsiteURL = $user->affiliate['location']->vanity_website_url ?? null;
-                if (!empty($user->permissions)
-                    && $user->permissions->get('public-website')
-                    && filter_var($affiliateWebsiteURL, FILTER_VALIDATE_URL) !== FALSE
-                ) {
-                    return $this->handle_redirect($affiliateWebsiteURL.'/wp-login.php'.$this->url_query($params));
+                    // Automatically redirect to Wordpress Site (if affiliate user has location website)
+                    $affiliateWebsiteURL = $user->affiliate['location']->vanity_website_url ?? null;
+                    if ($user->permissions->get('public-website')
+                        && filter_var($affiliateWebsiteURL, FILTER_VALIDATE_URL) !== FALSE
+                    ) {
+                        return $this->handle_redirect($affiliateWebsiteURL.'/wp-login.php'.$this->url_query($params));
+                    }
                 }
 
                 // Automatically redirect to AdminPortal (the "My Account" page)
