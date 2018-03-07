@@ -142,13 +142,13 @@ class RegisterController extends Controller
         try {
             $cognito = new CognitoHelper();
             $cognito->confirmSignup($username, $verificationCode);
-
-            session()->forget('verifyUsername');
-
-            return redirect()->route('login')->with('messages', [__('auth.emailVerified')]);
         }
         catch(AwsException $e) {
             return redirect()->back()->withErrors([__('auth.failedToVerify')]);
         }
+
+        session()->forget('verifyUsername');
+
+        return redirect()->route('login')->with('messages', [__('auth.emailVerified')]);
     }
 }
