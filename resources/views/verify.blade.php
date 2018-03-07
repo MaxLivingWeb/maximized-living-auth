@@ -18,7 +18,7 @@
                     <h2>Verify Email</h2>
 
                     @if (!$askForEmail)
-                        <p>We've emailed you a verification code</p>
+                        <p>We've emailed you a verification code.</p>
                     @endif
 
                     @include('components/forms/form-alert', ['errors' => $errors->all()])

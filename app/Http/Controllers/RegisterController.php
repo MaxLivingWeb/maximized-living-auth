@@ -81,6 +81,8 @@ class RegisterController extends Controller
             return redirect()->back()->withErrors([$e->getAwsErrorMessage()]);
         }
 
+        session()->forget('forgotPasswordUsername'); //in case this session was active... we want to remove this since now Registration was the latest event to take place
+
         return redirect()->route('register.enterVerificationCode');
     }
 

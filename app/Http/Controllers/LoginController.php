@@ -44,7 +44,7 @@ class LoginController extends Controller
         catch(AwsException $e) {
             if ($e->getAwsErrorCode() === 'UserNotConfirmedException') {
                 session()->put('verifyUsername', $username);
-                return redirect(route('verification.requestVerificationCode'));
+                return redirect(route('verification.index'));
             }
 
             return redirect()->back()->withInput()->withErrors([$e->getAwsErrorMessage()]);

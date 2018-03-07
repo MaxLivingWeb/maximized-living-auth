@@ -46,7 +46,9 @@ class VerificationController extends Controller
      */
     public function requestVerificationCode()
     {
-        return view('request-new-code');
+        return view('request-new-code', [
+            'username' => session()->get('verifyUsername')
+        ]);
     }
 
     /**
