@@ -4,18 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Helpers\CognitoHelper;
 use App\Helpers\ShopifyHelper;
+use App\Helpers\VerificationHelper;
 use Aws\Exception\AwsException;
-use GuzzleHttp\Exception\ClientException;
 use Illuminate\Http\Request;
 
 class RegisterController extends Controller
 {
+    /**
+     * View Registration Form
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
         return view('register');
     }
 
-    public function registerSubmit(Request $request)
+    /**
+     * Submit Registration Data
+     * @param Request $request
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
+    public function submitRegistration(Request $request)
     {
         $validatedData = $request->validate([
             'firstName'    => 'required',
@@ -72,14 +82,20 @@ class RegisterController extends Controller
             return redirect()->back()->withErrors([$e->getAwsErrorMessage()]);
         }
 
-        return redirect()->route('verify');
+        return redirect()->route('register.checkVerificationCode');
     }
 
-    public function verify(Request $request)
+    /**
+     * Check Verification code that was sent to Email Address to confirm account status
+     * @param Request $request
+     * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     */
+    public function checkVerificationCode(Request $request)
     {
-        if(session()->has('verifyUsername') && $request->has('verificationCode')) {
-            //We have both username and verificationCode, automatically verify the user
-            return $this->verifyUser(
+        // Verify account for Registration
+        if (session()->has('verifyUsername') && $request->has('verificationCode')) {
+            //We have both username and verificationCode, automatically verify the user & redirect accordingly
+            return VerificationHelper::confirmVerificationCode(
                 session()->get('verifyUsername'),
                 $request->input('verificationCode')
             );
@@ -91,12 +107,19 @@ class RegisterController extends Controller
         ]);
     }
 
-    public function verifySubmit(Request $request)
+    /**
+     * Submit Verification Code to complete confirmation process for account
+     * @param Request $request
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
+    public function submitVerificationCode(Request $request)
     {
         $fields = [
             'verificationCode' => 'required'
         ];
+
         $username = session()->get('verifyUsername');
+
         if(!session()->has('verifyUsername')) {
             $fields['email'] = 'required';
             $username = $request->input('email');
@@ -104,21 +127,6 @@ class RegisterController extends Controller
 
         $request->validate($fields);
 
-        return $this->verifyUser($username, $request->input('verificationCode'));
-    }
-
-    private function verifyUser($username, $verificationCode)
-    {
-        try {
-            $cognito = new CognitoHelper();
-            $cognito->confirmSignup($username, $verificationCode);
-        }
-        catch(AwsException $e) {
-            return redirect()->back()->withErrors([__('auth.failedToVerify')]);
-        }
-
-        session()->forget('verifyUsername');
-
-        return redirect()->route('login')->with('messages', [__('auth.emailVerified')]);
+        return VerificationHelper::confirmVerificationCode($username, $request->input('verificationCode'));
     }
 }

@@ -21,6 +21,7 @@
     }
 
     [type="submit"] {
+        margin-top: $small;
         min-width: 100%;
         @media (min-width: $tabletBreakpoint) {
             min-width: 10rem;

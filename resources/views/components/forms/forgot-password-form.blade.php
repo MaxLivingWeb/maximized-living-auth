@@ -1,8 +1,8 @@
-<form method="post" action="{{ route('updatePassword') }}">
+<form method="post" action="{{ route('forgotPassword.updatePassword') }}">
     {{ csrf_field() }}
     <div class="inputField">
         <label for="password">Verification Code</label>
-        <input value="{{ old('verificationCode') }}" type="text" name="verificationCode" id="verificationCode" placeholder="Verification Code" required>
+        <input value="{{ $verificationCode ?? old('verificationCode') }}" type="text" name="verificationCode" id="verificationCode" placeholder="Verification Code" required>
     </div>
     <div class="inputField">
         <label for="password">New Password</label>

@@ -9,10 +9,10 @@
         <input type="password" name="password" id="password" placeholder="Password" required/>
     </div>
     <div class="inputField">
-        <a href="{{ route('forgotPassword') }}" title="Forgot Password?">Forgot Password?</a>
+        <a href="{{ route('forgotPassword.index') }}" title="Forgot Password?">Forgot Password?</a>
     </div>
     <div class="inputField">
-        <a href="{{ route('register') }}" title="Register">Register</a>
+        <a href="{{ route('register.index') }}" title="Register">Register</a>
     </div>
     <div class="inputField">
         <button type="submit" class="button button-primary button-wide">Login</button>
