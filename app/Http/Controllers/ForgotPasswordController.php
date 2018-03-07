@@ -23,7 +23,7 @@ class ForgotPasswordController extends Controller
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function checkVerificationCode(Request $request)
+    public function enterVerificationCode(Request $request)
     {
         return view('forgot-password', [
             'verificationCode' => $request->input('verificationCode')
@@ -52,7 +52,7 @@ class ForgotPasswordController extends Controller
 
         session()->put('forgotPasswordUsername', $username);
 
-        return redirect()->route('forgotPassword.checkVerificationCode');
+        return redirect()->route('forgotPassword.enterVerificationCode');
     }
 
     /**

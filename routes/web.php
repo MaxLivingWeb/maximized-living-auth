@@ -26,18 +26,22 @@ Route::group(['middleware' => ['CaptureRedirectURI']], function() {
     // Forgot Password
     Route::get('/forgot-password', 'ForgotPasswordController@index')->name('forgotPassword.index');
     Route::post('/forgot-password', 'ForgotPasswordController@sendVerificationCode')->name('forgotPassword.sendVerificationCode');
-    Route::get('/forgot-password/verify', 'ForgotPasswordController@checkVerificationCode')->name('forgotPassword.checkVerificationCode');
+    Route::get('/forgot-password/verify', 'ForgotPasswordController@enterVerificationCode')->name('forgotPassword.enterVerificationCode');
     Route::post('/update-password', 'ForgotPasswordController@updatePassword')->name('forgotPassword.updatePassword');
 
     // Register new user and verify account
     Route::group(['prefix' => 'register'], function() {
         Route::get('/', 'RegisterController@index')->name('register.index');
         Route::post('/', 'RegisterController@submitRegistration')->name('register.submitRegistration');
-        Route::get('/verify', 'RegisterController@checkVerificationCode')->name('register.checkVerificationCode');
+        Route::get('/verify', 'RegisterController@enterVerificationCode')->name('register.enterVerificationCode');
         Route::post('/verify', 'RegisterController@submitVerificationCode')->name('register.submitVerificationCode');
     });
 
     // Return to the verification page through a link in the Verification Confirmation email template
     // Note: the same link /verify is used for all Verification Confirmation email templates... which means both account verification, and password reset verification
-    Route::get('/verify', 'VerificationFromEmailController@index')->name('verificationFromEmail.index');
+    Route::group(['prefix' => 'verify'], function() {
+        Route::get('/', 'VerificationController@index')->name('verification.index');
+        Route::get('/resend-verification-code', 'VerificationController@requestVerificationCode')->name('verification.requestVerificationCode');
+        Route::post('/resend-verification-code', 'VerificationController@resendVerificationCode')->name('verification.resendVerificationCode');
+    });
 });

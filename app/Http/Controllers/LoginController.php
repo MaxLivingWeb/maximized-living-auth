@@ -28,6 +28,8 @@ class LoginController extends Controller
 
     public function login(Request $request)
     {
+        $cognito = new CognitoHelper();
+
         $request->validate([
             'username' => 'required|email',
             'password' => 'required'
@@ -36,11 +38,15 @@ class LoginController extends Controller
         $username = strtolower($request->input('username'));
         $password = $request->input('password');
 
-        $cognito = new CognitoHelper();
         try {
             $result = $cognito->login($username, $password);
         }
         catch(AwsException $e) {
+            if ($e->getAwsErrorCode() === 'UserNotConfirmedException') {
+                session()->put('verifyUsername', $username);
+                return redirect(route('verification.requestVerificationCode'));
+            }
+
             return redirect()->back()->withInput()->withErrors([$e->getAwsErrorMessage()]);
         }
 

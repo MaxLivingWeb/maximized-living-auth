@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\CognitoHelper;
 use App\Helpers\ShopifyHelper;
-use App\Helpers\VerificationHelper;
 use Aws\Exception\AwsException;
 use Illuminate\Http\Request;
 
@@ -82,20 +81,20 @@ class RegisterController extends Controller
             return redirect()->back()->withErrors([$e->getAwsErrorMessage()]);
         }
 
-        return redirect()->route('register.checkVerificationCode');
+        return redirect()->route('register.enterVerificationCode');
     }
 
     /**
-     * Check Verification code that was sent to Email Address to confirm account status
+     * Enter Verification code that was sent to Email Address to confirm account status
      * @param Request $request
      * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function checkVerificationCode(Request $request)
+    public function enterVerificationCode(Request $request)
     {
         // Verify account for Registration
         if (session()->has('verifyUsername') && $request->has('verificationCode')) {
             //We have both username and verificationCode, automatically verify the user & redirect accordingly
-            return VerificationHelper::confirmVerificationCode(
+            return $this->confirmVerificationCode(
                 session()->get('verifyUsername'),
                 $request->input('verificationCode')
             );
@@ -127,6 +126,27 @@ class RegisterController extends Controller
 
         $request->validate($fields);
 
-        return VerificationHelper::confirmVerificationCode($username, $request->input('verificationCode'));
+        return $this->confirmVerificationCode($username, $request->input('verificationCode'));
+    }
+
+    /**
+     * Confirm verification code that was sent through Cognito
+     * @param $username
+     * @param $verificationCode
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
+    private function confirmVerificationCode($username, $verificationCode)
+    {
+        try {
+            $cognito = new CognitoHelper();
+            $cognito->confirmSignup($username, $verificationCode);
+
+            session()->forget('verifyUsername');
+
+            return redirect()->route('login')->with('messages', [__('auth.emailVerified')]);
+        }
+        catch(AwsException $e) {
+            return redirect()->back()->withErrors([__('auth.failedToVerify')]);
+        }
     }
 }
