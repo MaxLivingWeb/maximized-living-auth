@@ -79,7 +79,7 @@ class ForgotPasswordController extends Controller
             return view('forgot-password')->withErrors([$e->getAwsErrorMessage()]);
         }
 
-        session()->forget('forgotPasswordUsername');
+        session()->forget('forgotPasswordUsername'); // clear this, now that password has been updated
 
         return redirect()->route('login');
     }
