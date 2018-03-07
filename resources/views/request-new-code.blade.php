@@ -29,6 +29,9 @@
                             <input type="email" name="username" id="username" placeholder="Email" value="{{ $username ?? old('username') }}" required>
                         </div>
                         <div class="inputField">
+                            <p><small>Go back to verification page <a href="{{ route('verification.index') }}">here</a>.</small></p>
+                        </div>
+                        <div class="inputField">
                             <button type="submit" class="button button-primary button-wide">Send Code</button>
                         </div>
                     </form>
