@@ -16,10 +16,7 @@
             <div class="container">
                 <div class="welcomeCard card">
                     <h2>Verify Email</h2>
-
-                    @if (!$askForEmail)
-                        <p>We've emailed you a verification code.</p>
-                    @endif
+                    <p>We've emailed you a verification code.</p>
 
                     @include('components/forms/form-alert', ['errors' => $errors->all()])
 
