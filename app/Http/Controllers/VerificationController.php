@@ -28,19 +28,6 @@ class VerificationController extends Controller
     }
 
     /**
-     * Enter Verification code that was sent to Email Address to confirm account status
-     * @param Request $request
-     * @return $this|\Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
-     */
-    public function enterVerificationCode(Request $request)
-    {
-        return view('verify', [
-            'askForEmail' => !session()->has('verifyUsername'),
-            'verificationCode' => $request->input('verificationCode')
-        ]);
-    }
-
-    /**
      * Request a new Verification Code
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
