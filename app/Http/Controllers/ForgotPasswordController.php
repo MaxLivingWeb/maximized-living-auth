@@ -8,17 +8,34 @@ use Aws\Exception\AwsException;
 
 class ForgotPasswordController extends Controller
 {
+    /**
+     * Forgot your Password? Fill out the form to send a verification code to your email
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
         return view('send-code');
     }
 
-    public function verifyCode(Request $request)
+    /**
+     * Verification Code sent for reseting password... fill out the form to confirm password update
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function enterVerificationCode(Request $request)
     {
-        return view('forgot-password');
+        return view('forgot-password', [
+            'verificationCode' => $request->input('verificationCode')
+        ]);
     }
 
-    public function sendCode(Request $request)
+    /**
+     * Forgot your Password? Form was filled out, and verification code was sent to your email
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function sendVerificationCode(Request $request)
     {
         $request->validate([
             'username' => 'required|email'
@@ -35,9 +52,14 @@ class ForgotPasswordController extends Controller
 
         session()->put('forgotPasswordUsername', $username);
 
-        return redirect()->route('forgotPassword.verifyCode');
+        return redirect()->route('forgotPassword.enterVerificationCode');
     }
 
+    /**
+     * Verification Code was entered, and new password was set
+     * @param Request $request
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
     public function updatePassword(Request $request)
     {
         $request->validate([
@@ -49,7 +71,6 @@ class ForgotPasswordController extends Controller
         $password = $request->input('password');
         $verificationCode = $request->input('verificationCode');
 
-
         $cognito = new CognitoHelper();
         try {
             $cognito->updatePassword($username, $password, $verificationCode);
@@ -57,6 +78,8 @@ class ForgotPasswordController extends Controller
         catch(AwsException $e) {
             return view('forgot-password')->withErrors([$e->getAwsErrorMessage()]);
         }
+
+        session()->forget('forgotPasswordUsername'); // clear this, now that password has been updated
 
         return redirect()->route('login');
     }

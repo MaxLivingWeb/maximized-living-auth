@@ -236,6 +236,24 @@ class CognitoHelper
     }
 
     /**
+     * Re-sends the user a verification code via email or sms
+     *
+     * @param string $username
+     * @return \Aws\Result CodeDeliveryDetails
+     */
+    public function resendConfirmationCode($username)
+    {
+        $username = strtolower($username);
+        $result = $this->client->resendConfirmationCode([
+            'ClientId' => env('AWS_COGNITO_APP_CLIENT_ID'),
+            'SecretHash' => $this->srp->getSecretHash($username),
+            'Username' => $username
+        ]);
+
+        return $result;
+    }
+
+    /**
      * Redirects a user back to their callback url along with their IdToken and RefreshToken from AWS
      *
      * @param \Aws\Result AuthenticationResultType $authenticationResults

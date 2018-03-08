@@ -20,7 +20,9 @@
                         @include('components/forms/form-alert', ['errors' => $errors->all()])
                     @endif
 
-                    @include('components/forms/forgot-password-form')
+                    @include('components/forms/forgot-password-form', [
+                        'verificationCode' => $verificationCode
+                    ])
                 </div>
             </div>
             <div class="right bubbleBgContainer">
