@@ -108,6 +108,6 @@ class ForgotPasswordController extends Controller
         session()->forget('forgotPasswordVerificationCode');
 
         // Login!
-        return redirect()->route('login')->with('messages', [__('auth.forgotPasswordUpdated')]);
+        return redirect()->route('login')->with('messages', [__('auth.verificationForgotPasswordSuccess')]);
     }
 }

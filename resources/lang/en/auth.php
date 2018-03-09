@@ -16,10 +16,8 @@ return [
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
-    'emailVerified' => 'Success! Your email has been verified.',
-    'failedToVerify' => 'Failed! Your email could not be verified.',
-
-    'forgotPasswordUpdated' => 'Success! Your password has been changed.',
-    'forgotPasswordFailure' => 'Failed! Your password could not be changed.',
+    'verificationRegistrationSuccess' => 'Success! Your email has been verified.',
+    'verificationForgotPasswordSuccess' => 'Success! Your password has been changed.',
+    'verificationFailure' => 'Failed! Something went wrong in the verification process.'
 
 ];

@@ -90,7 +90,7 @@ class VerificationController extends Controller
                 $cognito->confirmSignup($username, $verificationCode);
                 $cognito->updateUserAttribute('custom:verificationState', 'Verified', $username);
                 session()->forget('verifyUsername');
-                return redirect()->route('login')->with('messages', [__('auth.emailVerified')]);
+                return redirect()->route('login')->with('messages', [__('auth.verificationRegistrationSuccess')]);
             }
         }
         catch(AwsException $e) {
