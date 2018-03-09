@@ -29,7 +29,7 @@
     </div>
 
     <div class="inputField">
-        <p><small>Request a new verification token by clicking <a href="{{ route('verification.requestVerificationCode') }}">here</a>.</small></p>
+        <p><small>Request a new verification code by clicking <a href="{{ route('verification.requestVerificationCode') }}">here</a>.</small></p>
     </div>
 
     <div class="inputField">
