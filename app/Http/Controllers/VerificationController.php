@@ -139,7 +139,6 @@ class VerificationController extends Controller
             }
         }
         catch(AwsException $e) {
-            dd($e);
         }
 
         return redirect()->route('verification.index');
