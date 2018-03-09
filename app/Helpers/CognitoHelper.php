@@ -154,23 +154,6 @@ class CognitoHelper
      * @param string $username
      * @return \Aws\Result CodeDeliveryDetails
      */
-    public function resetUserPassword($username)
-    {
-        $username = strtolower($username);
-        $result = $this->client->adminResetUserPassword([
-            'Username' => $username,
-            'UserPoolId' => env('AWS_COGNITO_USER_POOL_ID')
-        ]);
-
-        return $result;
-    }
-
-    /**
-     * Sends the user a password reset verification code via email or sms
-     *
-     * @param string $username
-     * @return \Aws\Result CodeDeliveryDetails
-     */
     public function sendPasswordCode($username)
     {
         $username = strtolower($username);
