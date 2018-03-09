@@ -78,9 +78,9 @@ class ForgotPasswordController extends Controller
             'verificationCode' => 'required'
         ]);
 
-        $username = $request->input('username') ?? session()->get('forgotPasswordUsername') ?? null;
+        $username = $request->input('username');
         $password = $request->input('password');
-        $verificationCode = $request->input('verificationCode') ?? session()->get('forgotPasswordVerificationCode') ?? null;
+        $verificationCode = $request->input('verificationCode');
 
         $cognito = new CognitoHelper();
         try {
