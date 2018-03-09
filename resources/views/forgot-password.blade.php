@@ -9,7 +9,7 @@
                 @if (empty($verificationCode))
                     <p>Enter the verification token below to change your password.</p>
                 @else
-                    <p>Verification Code received!<br>Enter your new password below to update your forgotten password.</p>
+                    <p>Verification Code received!<br>Enter your new password below to change your password.</p>
                 @endif
             </div>
         </div>
