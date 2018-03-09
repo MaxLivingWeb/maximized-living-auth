@@ -105,7 +105,6 @@ class VerificationController extends Controller
     public function requestVerificationCode()
     {
         return view('request-new-code', [
-            'title' => session()->get('resendVerificationCodeTitle'),
             'username' => session()->get('verifyUsername')
         ]);
     }

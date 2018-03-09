@@ -5,11 +5,7 @@
         <div class="container">
             <div class="heroContent">
                 <h1 class="heroHeadline">
-                    @if (empty($title))
-                        Resend Verification Code?
-                    @else
-                        {{ $title }}
-                    @endif
+                    Resend Verification Code?
                 </h1>
                 <p>Enter your account email to receive a new token.</p>
             </div>
