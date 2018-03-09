@@ -1,4 +1,4 @@
-<form method="post" action="{{ route('register.submitVerificationCode') }}">
+<form method="post" action="{{ route('verification.submitVerificationCode') }}">
     {{ csrf_field() }}
 
     @if($askForEmail)

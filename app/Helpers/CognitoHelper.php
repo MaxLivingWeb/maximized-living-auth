@@ -154,6 +154,23 @@ class CognitoHelper
      * @param string $username
      * @return \Aws\Result CodeDeliveryDetails
      */
+    public function resetUserPassword($username)
+    {
+        $username = strtolower($username);
+        $result = $this->client->adminResetUserPassword([
+            'Username' => $username,
+            'UserPoolId' => env('AWS_COGNITO_USER_POOL_ID')
+        ]);
+
+        return $result;
+    }
+
+    /**
+     * Sends the user a password reset verification code via email or sms
+     *
+     * @param string $username
+     * @return \Aws\Result CodeDeliveryDetails
+     */
     public function sendPasswordCode($username)
     {
         $username = strtolower($username);
@@ -174,7 +191,7 @@ class CognitoHelper
      * @param string $verificationCode
      * @return \Aws\Result
      */
-    public function updatePassword($username, $password, $verificationCode)
+    public function updateForgottenPassword($username, $password, $verificationCode)
     {
         $username = strtolower($username);
         $result = $this->client->confirmForgotPassword([
@@ -186,6 +203,69 @@ class CognitoHelper
         ]);
 
         return $result;
+    }
+
+    /**
+     * Retrieves a single user from Cognito.
+     *
+     * @param string $id The Cognito ID of the user to retrieve.
+     * @return mixed
+     */
+    public function getUser($id)
+    {
+        try {
+            return $this->client->adminGetUser([
+                'UserPoolId' => env('AWS_COGNITO_USER_POOL_ID'),
+                'Username' => $id
+            ]);
+        }
+        catch(AwsException $e) {
+            if($e->getStatusCode() !== 400) { // user not found
+                abort(
+                    $e->getStatusCode(),
+                    $e->getAwsErrorMessage()
+                );
+            }
+
+            return;
+        }
+    }
+
+    /**
+     * Get Cognito User Attribute by passing the Attribute keyname and array of attributes
+     * @param $key
+     * @param $attributes
+     */
+    public function getUserAttributeValue($key, $attributes)
+    {
+        if (empty($attributes)) {
+            return;
+        }
+
+        return collect($attributes)
+            ->where('Name', $key)
+            ->first()['Value'];
+    }
+
+    /**
+     * Update Cognito User attribute
+     * @param $key
+     * @param $value
+     * @param $username (email)
+     * @return \Aws\Result
+     */
+    public function updateUserAttribute($key, $value, $username)
+    {
+        return $this->client->adminUpdateUserAttributes([
+            'UserAttributes' => [
+                [
+                    'Name' => $key,
+                    'Value' => $value,
+                ]
+            ],
+            'UserPoolId' => env('AWS_COGNITO_USER_POOL_ID'),
+            'Username' => $username,
+        ]);
     }
 
     /**
@@ -208,6 +288,10 @@ class CognitoHelper
                 [
                     'Name' => 'custom:shopifyId',
                     'Value' => $shopifyId
+                ],
+                [
+                    'Name' => 'custom:verificationState',
+                    'Value' => 'Registration'
                 ]
             ]
         ]);

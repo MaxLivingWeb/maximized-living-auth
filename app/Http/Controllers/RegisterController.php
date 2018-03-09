@@ -83,7 +83,7 @@ class RegisterController extends Controller
 
         session()->forget('forgotPasswordUsername'); //in case this session was active... we want to remove this since now Registration was the latest event to take place
 
-        return redirect()->route('register.enterVerificationCode');
+        return redirect()->route('verification.index');
     }
 
     /**
@@ -142,9 +142,10 @@ class RegisterController extends Controller
         try {
             $cognito = new CognitoHelper();
             $cognito->confirmSignup($username, $verificationCode);
+            $cognito->updateUserAttribute('custom:verificationState', 'Verified', $username);
         }
         catch(AwsException $e) {
-            return redirect()->back()->withErrors([__('auth.failedToVerify')]);
+            return redirect()->route('verification.index')->withErrors($e->getAwsErrorMessage());
         }
 
         session()->forget('verifyUsername');

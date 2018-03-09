@@ -17,6 +17,9 @@ return [
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
 
     'emailVerified' => 'Success! Your email has been verified.',
-    'failedToVerify' => 'Failed! Your email could not be verified',
+    'failedToVerify' => 'Failed! Your email could not be verified.',
+
+    'forgotPasswordUpdated' => 'Success! Your password has been changed.',
+    'forgotPasswordFailure' => 'Failed! Your password could not be changed.',
 
 ];

@@ -4,7 +4,13 @@
     <section class="heroAlternative heroAlternative-padded centerAlign border-faintGrey">
         <div class="container">
             <div class="heroContent">
-                <h1 class="heroHeadline">Resend Verification Code?</h1>
+                <h1 class="heroHeadline">
+                    @if (empty($title))
+                        Resend Verification Code?
+                    @else
+                        {{ $title }}
+                    @endif
+                </h1>
                 <p>Enter your account email to receive a new token.</p>
             </div>
         </div>
@@ -29,7 +35,7 @@
                             <input type="email" name="username" id="username" placeholder="Email" value="{{ $username ?? old('username') }}" required>
                         </div>
                         <div class="inputField">
-                            <p><small>Go back to verification page <a href="{{ route('verification.index') }}">here</a>.</small></p>
+                            <p><small>Go back to verification page by clicking <a href="{{ route('verification.index') }}">here</a>.</small></p>
                         </div>
                         <div class="inputField">
                             <button type="submit" class="button button-primary button-wide">Send Code</button>

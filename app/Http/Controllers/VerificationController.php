@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\VerificationRequestHelper;
 use App\Helpers\CognitoHelper;
 use Aws\Exception\AwsException;
 use Illuminate\Http\Request;
@@ -18,13 +19,25 @@ class VerificationController extends Controller
         $params = $request->query();
         $query = !empty($params) ? '?'.http_build_query($params) : '';
 
+        // TODO: Update this to use the custom:verificationState variable
         // Redirect to "Forgot Password Verification" page, since 'forgotPasswordUsername' was saved to the session
         if (session()->has('forgotPasswordUsername')) {
             return redirect(route('forgotPassword.enterVerificationCode').$query);
         }
 
-        // Redirect to "Registration Verification" page
-        return redirect(route('register.enterVerificationCode').$query);
+        // Simply verify this confirmation code since the verificationState is set to "Registration"
+//        return redirect(route('register.enterVerificationCode').$query);
+        return VerificationRequestHelper::index($request);
+    }
+
+    /**
+     * Submit verification code
+     * @param Request $request
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
+    public function submit(Request $request)
+    {
+        return VerificationRequestHelper::submit($request);
     }
 
     /**
@@ -34,6 +47,7 @@ class VerificationController extends Controller
     public function requestVerificationCode()
     {
         return view('request-new-code', [
+            'title' => session()->get('resendVerificationCodeTitle'),
             'username' => session()->get('verifyUsername')
         ]);
     }
@@ -53,10 +67,23 @@ class VerificationController extends Controller
 
         $username = $request->input('username');
 
+        // Get user and check their current verification state
+        $cognitoUser = $cognito->getUser($username);
+        $verificationState = $cognito->getUserAttributeValue('custom:verificationState', $cognitoUser['UserAttributes']);
+
         try {
-            $cognito->resendConfirmationCode($username);
+            // User is currently in the process of verifying their forgotton password, so continue to that view to continue the verification process
+            if ($verificationState === 'ForgotPassword') {
+                $cognito->sendPasswordCode($username);
+            }
+
+            // User is currently in the process of verifying their account registration
+            if ($verificationState === 'Registration') {
+                $cognito->resendConfirmationCode($username);
+            }
         }
         catch(AwsException $e) {
+            dd($e);
         }
 
         return redirect()->route('verification.index');

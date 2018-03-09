@@ -33,15 +33,17 @@ Route::group(['middleware' => ['CaptureRedirectURI']], function() {
     Route::group(['prefix' => 'register'], function() {
         Route::get('/', 'RegisterController@index')->name('register.index');
         Route::post('/', 'RegisterController@submitRegistration')->name('register.submitRegistration');
-        Route::get('/verify', 'RegisterController@enterVerificationCode')->name('register.enterVerificationCode');
-        Route::post('/verify', 'RegisterController@submitVerificationCode')->name('register.submitVerificationCode');
+        Route::get('/verify', 'VerificationController@index')->name('verification.index');
+        Route::post('/verify', 'VerificationController@submit')->name('verification.submitVerificationCode');
     });
 
     // Return to the verification page through a link in the Verification Confirmation email template
     // Note: the same link /verify is used for all Verification Confirmation email templates... which means both account verification, and password reset verification
     Route::group(['prefix' => 'verify'], function() {
         Route::get('/', 'VerificationController@index')->name('verification.index');
+        Route::post('/', 'VerificationController@submit')->name('verification.submitVerificationCode');
         Route::get('/resend-verification-code', 'VerificationController@requestVerificationCode')->name('verification.requestVerificationCode');
         Route::post('/resend-verification-code', 'VerificationController@resendVerificationCode')->name('verification.resendVerificationCode');
     });
 });
+
