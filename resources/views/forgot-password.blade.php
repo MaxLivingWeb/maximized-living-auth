@@ -7,9 +7,9 @@
                 <h1 class="heroHeadline">Forgot Password?</h1>
 
                 @if (empty($verificationCode))
-                    <p>Enter the verification token below to change your password.</p>
+                    <p>Enter the verification code below to change your password.</p>
                 @else
-                    <p>Verification Code received!<br>Enter your new password below to change your password.</p>
+                    <p>Verification code received!<br>Enter your new password below to change your password.</p>
                 @endif
             </div>
         </div>
