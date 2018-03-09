@@ -18,15 +18,14 @@ class VerificationController extends Controller
     {
         $params = $request->query();
         $query = !empty($params) ? '?'.http_build_query($params) : '';
-
-        // TODO: Update this to use the custom:verificationState variable
+        
         // Redirect to "Forgot Password Verification" page, since 'forgotPasswordUsername' was saved to the session
         if (session()->has('forgotPasswordUsername')) {
             return redirect(route('forgotPassword.enterVerificationCode').$query);
         }
 
-        // Simply verify this confirmation code since the verificationState is set to "Registration"
-//        return redirect(route('register.enterVerificationCode').$query);
+        // Simply verify this confirmation code
+        // Note: If user's verificationState is set to "ForgotPassword" they will be directed to a 2nd page to fill out the rest of their information... otherwise verification for Account Registration is complete.
         return VerificationRequestHelper::index($request);
     }
 

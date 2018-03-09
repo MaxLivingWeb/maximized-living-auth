@@ -108,48 +108,4 @@ class RegisterController extends Controller
         ]);
     }
 
-    /**
-     * Submit Verification Code to complete confirmation process for account
-     * @param Request $request
-     * @return $this|\Illuminate\Http\RedirectResponse
-     */
-    public function submitVerificationCode(Request $request)
-    {
-        $fields = [
-            'verificationCode' => 'required'
-        ];
-
-        $username = session()->get('verifyUsername');
-
-        if(!session()->has('verifyUsername')) {
-            $fields['email'] = 'required';
-            $username = $request->input('email');
-        }
-
-        $request->validate($fields);
-
-        return $this->confirmVerificationCode($username, $request->input('verificationCode'));
-    }
-
-    /**
-     * Confirm verification code that was sent through Cognito
-     * @param $username
-     * @param $verificationCode
-     * @return $this|\Illuminate\Http\RedirectResponse
-     */
-    private function confirmVerificationCode($username, $verificationCode)
-    {
-        try {
-            $cognito = new CognitoHelper();
-            $cognito->confirmSignup($username, $verificationCode);
-            $cognito->updateUserAttribute('custom:verificationState', 'Verified', $username);
-        }
-        catch(AwsException $e) {
-            return redirect()->route('verification.index')->withErrors($e->getAwsErrorMessage());
-        }
-
-        session()->forget('verifyUsername');
-
-        return redirect()->route('login')->with('messages', [__('auth.emailVerified')]);
-    }
 }
