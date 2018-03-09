@@ -85,9 +85,8 @@ class VerificationController extends Controller
                     'forgotPasswordVerificationCode' => $verificationCode
                 ]);
             }
-
             // User is currently in the process of verifying their account registration
-            if ($verificationState === 'Registration') {
+            else {
                 $cognito->confirmSignup($username, $verificationCode);
                 $cognito->updateUserAttribute('custom:verificationState', 'Verified', $username);
                 session()->forget('verifyUsername');
@@ -135,9 +134,8 @@ class VerificationController extends Controller
             if ($verificationState === 'ForgotPassword') {
                 $cognito->sendPasswordCode($username);
             }
-
             // User is currently in the process of verifying their account registration
-            if ($verificationState === 'Registration') {
+            else {
                 $cognito->resendConfirmationCode($username);
             }
         }
