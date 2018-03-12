@@ -1,4 +1,4 @@
-<form method="post" action="{{ route('registerSubmit') }}">
+<form method="post" action="{{ route('register.submitRegistration') }}">
     {{ csrf_field() }}
     <div class="inputField">
         <label for="firstName">First Name *</label>

@@ -8,17 +8,40 @@ use Aws\Exception\AwsException;
 
 class ForgotPasswordController extends Controller
 {
+    /**
+     * Forgot your Password? Fill out the form to send a verification code to your email
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
         return view('send-code');
     }
 
-    public function verifyCode(Request $request)
+    /**
+     * Verification Code sent for reseting password... fill out the form to confirm password update
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function enterVerificationCode(Request $request)
     {
-        return view('forgot-password');
+        $verificationCode = session()->get('forgotPasswordVerificationCode');
+        if (!empty($request->input('verificationCode'))) {
+            $verificationCode = $request->input('verificationCode');
+        }
+
+        return view('forgot-password', [
+            'username' => session()->get('forgotPasswordUsername'),
+            'verificationCode' => $verificationCode
+        ]);
     }
 
-    public function sendCode(Request $request)
+    /**
+     * Forgot your Password? Form was filled out, and verification code was sent to your email
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function sendVerificationCode(Request $request)
     {
         $request->validate([
             'username' => 'required|email'
@@ -29,15 +52,25 @@ class ForgotPasswordController extends Controller
         $cognito = new CognitoHelper();
         try {
             $cognito->sendPasswordCode($username);
+            $cognito->updateUserAttribute(
+                'custom:verificationState',
+                'ForgotPassword',
+                $username
+            );
         }
         catch(AwsException $e) {
         }
 
         session()->put('forgotPasswordUsername', $username);
 
-        return redirect()->route('forgotPassword.verifyCode');
+        return redirect()->route('forgotPassword.enterVerificationCode');
     }
 
+    /**
+     * Verification Code was entered, and new password was set
+     * @param Request $request
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
     public function updatePassword(Request $request)
     {
         $request->validate([
@@ -45,19 +78,36 @@ class ForgotPasswordController extends Controller
             'verificationCode' => 'required'
         ]);
 
-        $username = session()->get('forgotPasswordUsername');
+        $username = $request->input('username');
         $password = $request->input('password');
         $verificationCode = $request->input('verificationCode');
 
-
         $cognito = new CognitoHelper();
         try {
-            $cognito->updatePassword($username, $password, $verificationCode);
+            $cognito->updateForgottenPassword($username, $password, $verificationCode);
+            $cognito->updateUserAttribute('custom:verificationState', 'Verified', $username);
         }
         catch(AwsException $e) {
-            return view('forgot-password')->withErrors([$e->getAwsErrorMessage()]);
+            $validVerificationCode = (
+                $e->getAwsErrorCode() !== 'ExpiredCodeException'
+                && $e->getAwsErrorCode() !== 'CodeMismatchException'
+            );
+
+            return redirect()->route('forgotPassword.enterVerificationCode')
+                ->with([
+                    'forgotPasswordUsername' => $username,
+                    'forgotPasswordVerificationCode' => $validVerificationCode ? $verificationCode : null
+                ])
+                ->withErrors([
+                    $e->getAwsErrorMessage()
+                ]);
         }
 
-        return redirect()->route('login');
+        // clear this, now that password has been updated
+        session()->forget('forgotPasswordUsername');
+        session()->forget('forgotPasswordVerificationCode');
+
+        // Login!
+        return redirect()->route('login')->with('messages', [__('auth.verificationForgotPasswordSuccess')]);
     }
 }

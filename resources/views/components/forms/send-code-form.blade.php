@@ -1,4 +1,4 @@
-<form method="post" action="{{ route('sendCode') }}">
+<form method="post" action="{{ route('forgotPassword.sendVerificationCode') }}">
     {{ csrf_field() }}
     <div class="inputField">
         <label for="username">Email address</label>

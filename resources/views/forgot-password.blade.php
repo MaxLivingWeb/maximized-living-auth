@@ -5,7 +5,12 @@
         <div class="container">
             <div class="heroContent">
                 <h1 class="heroHeadline">Forgot Password?</h1>
-                <p>Enter the verification token below to change your password.</p>
+
+                @if (empty($verificationCode))
+                    <p>Enter the verification code below to change your password.</p>
+                @else
+                    <p>Verification code received!<br>Enter your new password below to change your password.</p>
+                @endif
             </div>
         </div>
     </section>
@@ -20,7 +25,10 @@
                         @include('components/forms/form-alert', ['errors' => $errors->all()])
                     @endif
 
-                    @include('components/forms/forgot-password-form')
+                    @include('components/forms/forgot-password-form', [
+                        'username' => $username,
+                        'verificationCode' => $verificationCode
+                    ])
                 </div>
             </div>
             <div class="right bubbleBgContainer">
