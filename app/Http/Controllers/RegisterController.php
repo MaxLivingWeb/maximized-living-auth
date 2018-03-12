@@ -83,7 +83,7 @@ class RegisterController extends Controller
 
         session()->forget('forgotPasswordUsername'); //in case this session was active... we want to remove this since now Registration was the latest event to take place
 
-        return redirect()->route('register.enterVerificationCode');
+        return redirect()->route('verification.index');
     }
 
     /**
@@ -108,47 +108,4 @@ class RegisterController extends Controller
         ]);
     }
 
-    /**
-     * Submit Verification Code to complete confirmation process for account
-     * @param Request $request
-     * @return $this|\Illuminate\Http\RedirectResponse
-     */
-    public function submitVerificationCode(Request $request)
-    {
-        $fields = [
-            'verificationCode' => 'required'
-        ];
-
-        $username = session()->get('verifyUsername');
-
-        if(!session()->has('verifyUsername')) {
-            $fields['email'] = 'required';
-            $username = $request->input('email');
-        }
-
-        $request->validate($fields);
-
-        return $this->confirmVerificationCode($username, $request->input('verificationCode'));
-    }
-
-    /**
-     * Confirm verification code that was sent through Cognito
-     * @param $username
-     * @param $verificationCode
-     * @return $this|\Illuminate\Http\RedirectResponse
-     */
-    private function confirmVerificationCode($username, $verificationCode)
-    {
-        try {
-            $cognito = new CognitoHelper();
-            $cognito->confirmSignup($username, $verificationCode);
-        }
-        catch(AwsException $e) {
-            return redirect()->back()->withErrors([__('auth.failedToVerify')]);
-        }
-
-        session()->forget('verifyUsername');
-
-        return redirect()->route('login')->with('messages', [__('auth.emailVerified')]);
-    }
 }

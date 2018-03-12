@@ -25,8 +25,14 @@ class ForgotPasswordController extends Controller
      */
     public function enterVerificationCode(Request $request)
     {
+        $verificationCode = session()->get('forgotPasswordVerificationCode');
+        if (!empty($request->input('verificationCode'))) {
+            $verificationCode = $request->input('verificationCode');
+        }
+
         return view('forgot-password', [
-            'verificationCode' => $request->input('verificationCode')
+            'username' => session()->get('forgotPasswordUsername'),
+            'verificationCode' => $verificationCode
         ]);
     }
 
@@ -46,6 +52,11 @@ class ForgotPasswordController extends Controller
         $cognito = new CognitoHelper();
         try {
             $cognito->sendPasswordCode($username);
+            $cognito->updateUserAttribute(
+                'custom:verificationState',
+                'ForgotPassword',
+                $username
+            );
         }
         catch(AwsException $e) {
         }
@@ -67,20 +78,36 @@ class ForgotPasswordController extends Controller
             'verificationCode' => 'required'
         ]);
 
-        $username = session()->get('forgotPasswordUsername');
+        $username = $request->input('username');
         $password = $request->input('password');
         $verificationCode = $request->input('verificationCode');
 
         $cognito = new CognitoHelper();
         try {
-            $cognito->updatePassword($username, $password, $verificationCode);
+            $cognito->updateForgottenPassword($username, $password, $verificationCode);
+            $cognito->updateUserAttribute('custom:verificationState', 'Verified', $username);
         }
         catch(AwsException $e) {
-            return view('forgot-password')->withErrors([$e->getAwsErrorMessage()]);
+            $validVerificationCode = (
+                $e->getAwsErrorCode() !== 'ExpiredCodeException'
+                && $e->getAwsErrorCode() !== 'CodeMismatchException'
+            );
+
+            return redirect()->route('forgotPassword.enterVerificationCode')
+                ->with([
+                    'forgotPasswordUsername' => $username,
+                    'forgotPasswordVerificationCode' => $validVerificationCode ? $verificationCode : null
+                ])
+                ->withErrors([
+                    $e->getAwsErrorMessage()
+                ]);
         }
 
-        session()->forget('forgotPasswordUsername'); // clear this, now that password has been updated
+        // clear this, now that password has been updated
+        session()->forget('forgotPasswordUsername');
+        session()->forget('forgotPasswordVerificationCode');
 
-        return redirect()->route('login');
+        // Login!
+        return redirect()->route('login')->with('messages', [__('auth.verificationForgotPasswordSuccess')]);
     }
 }
