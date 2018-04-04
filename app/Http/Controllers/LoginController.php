@@ -47,7 +47,7 @@ class LoginController extends Controller
                 return redirect()->back()
                     ->withInput()
                     ->withErrors([
-                        'Your account has been deactivated. For more information, please contact the MaxLiving support team.<br>Email: <a href="mailto:websupport@maxliving.com">websupport@maxliving.com</a><br>Phone: <a href="tel:3219392040">(321) 939-2040</a>'
+                        'We regret your account has been deactivated and your login doesn\'t appear to be working anymore.<br><br>For more information, please contact MaxLiving\'s Web Support for assistance by calling <a href="tel:3219392040">321-939-2040</a> or&nbsp;emailing&nbsp;<a href="mailto:websupport@maxliving.com">websupport@maxliving.com</a>'
                     ]);
             }
 
