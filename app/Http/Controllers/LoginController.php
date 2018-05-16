@@ -24,12 +24,7 @@ class LoginController extends Controller
         if (empty($request->input('redirect_uri'))) {
             session()->forget('redirect_uri');
         }
-        if (empty($request->input('redirect_path'))
-            || (
-                $request->input('redirect_path') !== '/login'
-                && $request->input('redirect_path') !== 'login'
-            )
-        ) {
+        if (empty($request->input('redirect_path'))) {
             session()->forget('redirect_path');
         }
 
