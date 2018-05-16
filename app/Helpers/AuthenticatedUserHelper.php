@@ -30,9 +30,34 @@ class AuthenticatedUserHelper
     {
         $maxlivingAPI = new MaximizedLivingAPI();
 
-        $affiliate = (array)$maxlivingAPI->getUserAffiliate($user['cognito:username']) ?? null;
+        return $maxlivingAPI->getUserAffiliate($user['cognito:username']) ?? null;
+    }
 
-        return $affiliate;
+    /**
+     * Determines what type of user the current user is
+     * @param \stdClass $user
+     * @param \stdClass $affiliate
+     * @return string
+     */
+    public static function getCurrentUserType($user, $affiliate): string
+    {
+        if (self::checkIfAdmin($user)) {
+            return 'Admin';
+        }
+
+        if (!empty($affiliate)) {
+            // user has a Client commission group
+            if(preg_match("/^Client\s-\s.+$/", $affiliate->commission->description)) {
+                return 'Client';
+            }
+
+            // user is a Wholesaler
+            if($affiliate->wholesaler === true) {
+                return 'Wholesaler';
+            }
+        }
+
+        return 'Customer';
     }
 
     /**
@@ -40,7 +65,7 @@ class AuthenticatedUserHelper
      * @param $user
      * @return bool
      */
-    public static function checkIfAdmin($user)
+    private static function checkIfAdmin($user)
     {
         $permissions = self::getUserPermissions($user);
 
@@ -52,18 +77,6 @@ class AuthenticatedUserHelper
             && $permissions->get('dashboard-commissions')
             && $permissions->get('dashboard-wholesaler')
         );
-    }
-
-    /**
-     * Check if User is an affiliate by checking `cognito:username` user data
-     * @param $user
-     * @return bool
-     */
-    public static function checkIfAffiliate($user)
-    {
-        $affiliate = self::getUserAffiliateData($user);
-
-        return !empty($affiliate);
     }
 
 }

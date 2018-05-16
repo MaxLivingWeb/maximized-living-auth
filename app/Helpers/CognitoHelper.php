@@ -348,7 +348,10 @@ class CognitoHelper
         // Redirect to the provided link
         if (session()->has('redirect_uri')) {
             // Make sure User's redirect_uri is accessible based on their permissions
-            if (session()->get('redirect_uri') == env('MAXLIVING_ADMIN_URL') && !$user->is_admin && !$user->is_affiliate) {
+            if (session()->get('redirect_uri') == env('MAXLIVING_ADMIN_URL')
+                && !$user->accountType==='Admin'
+                && !$user->accountType==='Client'
+            ) {
                 $params['redirect_path'] = 'account';
                 return $this->handle_redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
             }
@@ -357,12 +360,12 @@ class CognitoHelper
         }
 
         // Automatically redirect to AdminPortal
-        if ($user->is_admin) {
+        if ($user->accountType==='Admin') {
             return $this->handle_redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
         }
 
-        // Affiliate User redirects
-        if ($user->is_affiliate) {
+        // Client User redirects
+        if ($user->accountType==='Client') {
             // No permissions. Automatically redirect to AdminPortal (the "My Account" page) since permissions are empty. From here, they can click the links to end up wherever.
             if (empty($user->permissions)) {
                 $params['redirect_path'] = 'account';
@@ -374,8 +377,8 @@ class CognitoHelper
                 return $this->handle_redirect(env('MAXLIVING_CONTENTPORTAL_URL') . $this->url_query($params));
             }
 
-            // Automatically redirect to Wordpress Site (if affiliate user has location website)
-            $affiliateWebsiteURL = $user->affiliate['location']->vanity_website_url ?? null;
+            // Automatically redirect to Wordpress Site (if client user has clinic website)
+            $affiliateWebsiteURL = $user->affiliate->location->vanity_website_url ?? null;
             if ($user->permissions->get('public-website')
                 && filter_var($affiliateWebsiteURL, FILTER_VALIDATE_URL) !== FALSE
             ) {
@@ -393,13 +396,14 @@ class CognitoHelper
         $loader = new Loader();
         $user = $loader->load($token)->getPayload();
 
+        $affiliate = AuthenticatedUserHelper::getUserAffiliateData($user);
+
         // Tidy up user data to sendback
         return (object)[
             'email' => $user['email'],
             'permissions' => AuthenticatedUserHelper::getUserPermissions($user),
-            'affiliate' => AuthenticatedUserHelper::getUserAffiliateData($user),
-            'is_admin' => AuthenticatedUserHelper::checkIfAdmin($user),
-            'is_affiliate' => AuthenticatedUserHelper::checkIfAffiliate($user)
+            'affiliate' => $affiliate,
+            'accountType' => AuthenticatedUserHelper::getCurrentUserType($user, $affiliate)
         ];
     }
 
