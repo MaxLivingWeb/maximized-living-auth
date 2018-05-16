@@ -42,6 +42,16 @@ class LoginController extends Controller
             $result = $cognito->login($username, $password);
         }
         catch(AwsException $e) {
+            // User is not allowed to proceed. Display error message to reach out to ML Support
+            if ($e->getAwsErrorCode() === 'NotAuthorizedException') {
+                return redirect()->back()
+                    ->withInput()
+                    ->withErrors([
+                        'Your account has been suspended.<br><br>You can log in by creating a new account. Please reach out to MaxLiving support if you have questions.<br><br>Tel: <a href="tel:3219392040">(321) 939-2040</a><br>Email: <a href="mailto:websupport@maxliving.com">websupport@maxliving.com</a>'
+                    ]);
+            }
+
+            // User is not Verified, redirect back to verification page
             if ($e->getAwsErrorCode() === 'UserNotConfirmedException') {
                 session()->put('verifyUsername', $username);
                 return redirect(route('verification.index'));
