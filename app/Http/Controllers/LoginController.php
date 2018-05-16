@@ -11,7 +11,12 @@ class LoginController extends Controller
     public function index(Request $request)
     {
         // Pass any additional params to session
-        if (!empty($request->input('redirect_path'))) {
+        if (!empty($request->input('redirect_path'))
+            && (
+                $request->input('redirect_path') !== '/login'
+                || $request->input('redirect_path') !== 'login'
+            )
+        ) {
             session()->put('redirect_path', $request->input('redirect_path'));
         }
 
@@ -19,7 +24,12 @@ class LoginController extends Controller
         if (empty($request->input('redirect_uri'))) {
             session()->forget('redirect_uri');
         }
-        if (empty($request->input('redirect_path'))) {
+        if (empty($request->input('redirect_path'))
+            || (
+                $request->input('redirect_path') !== '/login'
+                && $request->input('redirect_path') !== 'login'
+            )
+        ) {
             session()->forget('redirect_path');
         }
 

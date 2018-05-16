@@ -349,9 +349,12 @@ class CognitoHelper
         if (session()->has('redirect_uri')) {
             // Make sure User's redirect_uri is accessible based on their permissions
             if (session()->get('redirect_uri') == env('MAXLIVING_ADMIN_URL')
-                && !$user->accountType==='Admin'
-                && !$user->accountType==='Client'
+                && (
+                    $user->accountType !== 'Admin'
+                    || $user->accountType !== 'Client'
+                )
             ) {
+                $params['redirect_uri'] = env('MAXLIVING_STORE_URL');
                 $params['redirect_path'] = 'account';
                 return $this->handle_redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
             }
@@ -360,12 +363,12 @@ class CognitoHelper
         }
 
         // Automatically redirect to AdminPortal
-        if ($user->accountType==='Admin') {
+        if ($user->accountType === 'Admin') {
             return $this->handle_redirect(env('MAXLIVING_ADMIN_URL') . $this->url_query($params));
         }
 
         // Client User redirects
-        if ($user->accountType==='Client') {
+        if ($user->accountType === 'Client') {
             // No permissions. Automatically redirect to AdminPortal (the "My Account" page) since permissions are empty. From here, they can click the links to end up wherever.
             if (empty($user->permissions)) {
                 $params['redirect_path'] = 'account';
