@@ -44,6 +44,20 @@ class MaximizedLivingAPI
     {
         $result = $this->client->get('user/' . $userId . '/affiliate');
 
-        return json_decode($result->getBody()->getContents());
+        $json = $result->getBody()->getContents();
+        if ($this->empty_encoded_json_object($json)) {
+            return null; //sendback null, since json returned an empty object
+        }
+
+        return json_decode($json);
+    }
+
+    /**
+     * Check to see if JSON Response is returning an empty object.
+     * @param string $json
+     * @return bool
+     */
+    private function empty_encoded_json_object($json) {
+        return $json === '{}';
     }
 }

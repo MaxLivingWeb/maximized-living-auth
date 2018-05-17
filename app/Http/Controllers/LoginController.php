@@ -48,7 +48,7 @@ class LoginController extends Controller
         }
         catch(AwsException $e) {
             // User is not allowed to proceed. Display error message to reach out to ML Support
-            if ($e->getAwsErrorCode() === 'NotAuthorizedException') {
+            if ($e->getAwsErrorCode() === 'NotAuthorizedException' && $e->getAwsErrorMessage() === 'User is disabled') {
                 return redirect()->back()
                     ->withInput()
                     ->withErrors([
