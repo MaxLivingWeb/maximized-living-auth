@@ -351,7 +351,7 @@ class CognitoHelper
             if (session()->get('redirect_uri') == env('MAXLIVING_ADMIN_URL')
                 && (
                     $user->accountType !== 'Admin'
-                    || $user->accountType !== 'Client'
+                    && $user->accountType !== 'Client'
                 )
             ) {
                 $params['redirect_uri'] = env('MAXLIVING_STORE_URL');
