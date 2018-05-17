@@ -63,7 +63,7 @@ class ForgotPasswordController extends Controller
                 return redirect()
                     ->route('login')
                     ->withErrors([
-                        'Attempt limit exceeded while attempting to change forgotten password. Please try after some time.'
+                        'Attempt limit exceeded while attempting to change forgotten password. Please try again later.'
                     ]);
             }
         }
