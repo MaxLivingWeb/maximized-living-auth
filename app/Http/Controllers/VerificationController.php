@@ -139,6 +139,13 @@ class VerificationController extends Controller
             }
         }
         catch(AwsException $e) {
+            if ($e->getAwsErrorCode() === 'LimitExceededException') {
+                return redirect()
+                    ->route('login')
+                    ->withErrors([
+                        'Attempt limit exceeded while attempting to resend verification code. Please try again later.'
+                    ]);
+            }
         }
 
         return redirect()->route('verification.index');
