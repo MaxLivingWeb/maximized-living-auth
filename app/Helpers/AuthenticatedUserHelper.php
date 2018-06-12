@@ -47,7 +47,7 @@ class AuthenticatedUserHelper
 
         if (!empty($affiliate)) {
             // user has a Client commission group
-            if(preg_match("/^Client\s-\s.+$/", $affiliate->commission->description)) {
+            if(preg_match("/^Client\s-\s.+$/", optional($affiliate->commission)->description)) {
                 return 'Client';
             }
 
