@@ -40,8 +40,14 @@ class NewPasswordController extends Controller
      */
     public function enterVerificationCode(Request $request)
     {
+        $verificationCode = session()->get('resetPasswordVerificationCode');
+        if (!empty($request->input('verificationCode'))) {
+            $verificationCode = $request->input('verificationCode');
+        }
+
         return view('new-password-from-password-reset', [
-            'username' => session()->get('resetPasswordUsername')
+            'username' => session()->get('resetPasswordUsername'),
+            'verificationCode' => $verificationCode
         ]);
     }
 }
