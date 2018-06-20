@@ -29,6 +29,9 @@ Route::group(['middleware' => ['CaptureRedirectURI']], function() {
     Route::get('/forgot-password/verify', 'ForgotPasswordController@enterVerificationCode')->name('forgotPassword.enterVerificationCode');
     Route::post('/update-password', 'ForgotPasswordController@updatePassword')->name('forgotPassword.updatePassword');
 
+    // Admin Reset Password
+    Route::get('/new-password/verify', 'NewPasswordController@enterVerificationCode')->name('newPasswordFromPasswordReset.enterVerificationCode');
+
     // Register new user and verify account
     Route::group(['prefix' => 'register'], function() {
         Route::get('/', 'RegisterController@index')->name('register.index');

@@ -13,4 +13,14 @@
         background-color: #dff0d8;
         border-color: #d6e9c6;
     }
+    &-warning {
+        background-color: #fcf8e3;
+        border-color: #faf2cc;
+        color: #8a6d3b;
+    }
+    &-info {
+        background-color: #d9edf7;
+        border-color: #bcdff1;
+        color: #31708f;
+    }
 }

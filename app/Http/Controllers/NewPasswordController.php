@@ -32,4 +32,16 @@ class NewPasswordController extends Controller
 
         return $cognito->checkForChallenge($result);
     }
+
+    /**
+     * Verification Code sent for reseting password... fill out the form to confirm password update
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function enterVerificationCode(Request $request)
+    {
+        return view('new-password-from-password-reset', [
+            'username' => session()->get('resetPasswordUsername')
+        ]);
+    }
 }
