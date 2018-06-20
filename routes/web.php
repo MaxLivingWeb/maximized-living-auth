@@ -14,7 +14,9 @@
 Route::group(['middleware' => ['CaptureRedirectURI']], function() {
     // Login
     Route::get('/', 'LoginController@index')->name('home');
-    Route::get('/login', 'LoginController@index')->name('login');
+    Route::get('/login', function(){
+        return redirect(route('home'));
+    })->name('login');
     Route::post('/login', 'LoginController@login')->name('submitLogin');
 
     // Create New Password
