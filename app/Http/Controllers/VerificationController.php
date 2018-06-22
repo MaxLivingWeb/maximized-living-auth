@@ -85,6 +85,13 @@ class VerificationController extends Controller
                     'forgotPasswordVerificationCode' => $verificationCode
                 ]);
             }
+            // User is currently in the process of updating their resetted password (an admin reset it)
+            elseif ($verificationState === 'AdminResetPassword') {
+                return redirect()->route('newPasswordFromPasswordReset.enterVerificationCode')->with([
+                    'resetPasswordUsername' => $username,
+                    'resetPasswordVerificationCode' => $verificationCode
+                ]);
+            }
             // User is currently in the process of verifying their account registration
             else {
                 $cognito->confirmSignup($username, $verificationCode);
