@@ -56,6 +56,12 @@ class LoginController extends Controller
                     ]);
             }
 
+            // Admin Reset User's Password, will need to enter submitted Verification Code & create a new password!
+            if ($e->getAwsErrorCode() === 'PasswordResetRequiredException') {
+                session()->put('resetPasswordUsername', $username);
+                return redirect(route('newPasswordFromPasswordReset.enterVerificationCode'));
+            }
+
             // User is not Verified, redirect back to verification page
             if ($e->getAwsErrorCode() === 'UserNotConfirmedException') {
                 session()->put('verifyUsername', $username);

@@ -100,7 +100,7 @@ class ForgotPasswordController extends Controller
                 && $e->getAwsErrorCode() !== 'CodeMismatchException'
             );
 
-            return redirect()->route('forgotPassword.enterVerificationCode')
+            return redirect()->back()
                 ->with([
                     'forgotPasswordUsername' => $username,
                     'forgotPasswordVerificationCode' => $validVerificationCode ? $verificationCode : null

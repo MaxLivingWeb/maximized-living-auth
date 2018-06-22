@@ -4,8 +4,7 @@
     <section class="heroAlternative heroAlternative-padded centerAlign border-faintGrey">
         <div class="container">
             <div class="heroContent">
-                <h1 class="heroHeadline">Forgot Password?</h1>
-
+                <h1 class="heroHeadline">New Password</h1>
                 @if (empty($verificationCode))
                     <p>Enter the verification code that was sent to your email address to change your password.</p>
                 @else
@@ -21,6 +20,13 @@
             </div>
             <div class="container">
                 <div class="welcomeCard card">
+                    <div>
+                        <p class="alert alert-warning">
+                            Your password has been reset, and you have to change your password in order to log in again.
+                        </p>
+                    </div>
+                    <br/>
+
                     @if($errors->any())
                         @include('components/forms/form-alert', ['errors' => $errors->all()])
                     @endif

@@ -14,7 +14,9 @@
 Route::group(['middleware' => ['CaptureRedirectURI']], function() {
     // Login
     Route::get('/', 'LoginController@index')->name('home');
-    Route::get('/login', 'LoginController@index')->name('login');
+    Route::get('/login', function(){
+        return redirect(route('home'));
+    })->name('login');
     Route::post('/login', 'LoginController@login')->name('submitLogin');
 
     // Create New Password
@@ -28,6 +30,9 @@ Route::group(['middleware' => ['CaptureRedirectURI']], function() {
     Route::post('/forgot-password', 'ForgotPasswordController@sendVerificationCode')->name('forgotPassword.sendVerificationCode');
     Route::get('/forgot-password/verify', 'ForgotPasswordController@enterVerificationCode')->name('forgotPassword.enterVerificationCode');
     Route::post('/update-password', 'ForgotPasswordController@updatePassword')->name('forgotPassword.updatePassword');
+
+    // Admin Reset Password
+    Route::get('/new-password/verify', 'NewPasswordController@enterVerificationCode')->name('newPasswordFromPasswordReset.enterVerificationCode');
 
     // Register new user and verify account
     Route::group(['prefix' => 'register'], function() {
