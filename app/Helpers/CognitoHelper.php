@@ -347,18 +347,6 @@ class CognitoHelper
 
         // Redirect to the provided link
         if (session()->has('redirect_uri')) {
-            // Make sure User's redirect_uri is accessible based on their permissions
-            if (session()->get('redirect_uri') == env('MAXLIVING_ADMIN_URL')
-                && (
-                    $user->accountType !== 'Admin'
-                    && $user->accountType !== 'Client'
-                )
-            ) {
-                $params['redirect_uri'] = env('MAXLIVING_STORE_URL');
-                $params['redirect_path'] = 'account';
-                return $this->handle_redirect(env('MAXLIVING_STORE_URL') . $this->url_query($params));
-            }
-            // Redirect URL is accessible, so go there
             return $this->handle_redirect(session()->get('redirect_uri') . $this->url_query($params));
         }
 
